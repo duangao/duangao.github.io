@@ -72,6 +72,14 @@
         </a>
       </li>
     
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          关于
+        </a>
+      </li>
+    
   </ul>
 
 
@@ -123,12 +131,15 @@
         
 
         
-          <pre><code>之前按照 SICP 的实现方式修改简化实现了一个简易的scheme 解释器，然后改用 python 实现了一次(其实是两次，还重写了一次)。
-中途又去玩 haskell 去了；顺便一提，了解 haskell 和 scheme 十分重要，二者都包含很多独特重要的思想，haskell 推荐《haskell 趣学指南》十分通俗易懂。 haskell 一个特性是惰性求值，其实 SICP中第三章介绍了流和<span class="command">delay</span> evaluation ，第四章后面实现了lazy evaluation的变形，这篇文章是解决SICP中实现<span class="command">delay</span> evaluation的一个小问题。
-</code></pre><p>SICP 第三章介绍流的时候介绍了delay eval的实现，然而你如果直接按照书上的写法在racket里面运行的话，会无法实现“delay”！</p>
+          <ul>
+<li>之前按照 SICP 的实现方式修改简化实现了一个简易的scheme 解释器，然后改用 python 实现了一次(其实是两次，还重写了一次)。</li>
+<li>中途又去玩 haskell 去了；顺便一提，了解 haskell 和 scheme 十分重要，二者都包含很多独特重要的思想，haskell 推荐《haskell 趣学指南》十分通俗易懂。 haskell 一个特性是惰性求值，其实 SICP中第三章介绍了流和delay evaluation ，第四章后面实现了lazy evaluation的变形，这篇文章是解决SICP中实现delay evaluation的一个小问题。</li>
+</ul>
+<p>SICP 第三章介绍流的时候介绍了delay eval的实现，然而你如果直接按照书上的写法在racket里面运行的话，会无法实现“delay”！</p>
 <ul>
 <li>直接按照书写的话大概是这个样子,包含一个重要的优化（对于同一个表达式只求值一次）：</li>
 </ul>
+<a id="more"></a>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define (memory-proc proc) &#10;&#9;(let ([result false] &#10;&#9;&#9;  [first-time-to-run? true]&#10;&#9;&#9;)&#10;&#9;(lambda ()&#10;&#9;(cond&#10;&#9;&#9;[first-time-to-run? (begin (set! result (proc)) (set! first-time-to-run? false) result)] &#10;&#9;&#9;[else result]))))&#10;(define (delay s)&#10;&#9;(memory-proc (lambda() s)))&#10;(define (force d)&#10;&#9;(d))&#10;(define (stream-car a)&#10;&#9;(car a))&#10;(define (stream-cdr a)&#10;&#9;(force (cdr a)))&#10;(define (stream-cons a b)&#10;&#9;(cons a (delay b)))</span><br></pre></td></tr></table></figure>
 <p>容易验证它是没有delay性质的，可以使用练习3.51，当然你要先完成map enumerate filter ref等操作，这些操作和不用流一样，十分简单。</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define (stream-ref ls n) &#10;&#9;(cond &#10;&#9;&#9;[(= n 0) (stream-car ls)]&#10;&#9;&#9;[else (stream-ref (stream-cdr ls) (- n 1))] ))&#10;(define (stream-map proc s) &#10;&#9;(cond&#10;&#9;&#9;[(null? s) stream-nil]&#10;&#9;&#9;[else (stream-cons (proc (stream-car s) ) (stream-map proc (stream-cdr s))  )]))&#10;(define (stream-enumerate-interval beg end)&#10;&#9;(cond&#10;&#9;&#9;[(&#62; beg end) stream-nil]&#10;&#9;&#9;[else (stream-cons beg (stream-enumerate-interval (+ beg 1) end )  )]))</span><br></pre></td></tr></table></figure>
@@ -238,7 +249,7 @@
             <span class="site-state-item-name">标签</span>
         </div>
         <div class="site-state-item site-state-pages">
-            <span class="site-state-item-count">0</span>
+            <span class="site-state-item-count">2</span>
             <span class="site-state-item-name">页面</span>
         </div>
       </div>

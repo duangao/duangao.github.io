@@ -74,6 +74,14 @@
         </a>
       </li>
     
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          关于
+        </a>
+      </li>
+    
   </ul>
 
 
@@ -135,41 +143,11 @@
 <li>页面指定内容抓取， 使用BeautifulSoup 包实现；</li>
 <li>邮件发送 ，使用SMTP 和 email 包实现</li>
 </ul>
-<h1 id="具体内容">具体内容</h1><h2 id="涉及到的import">涉及到的import</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests,re</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span>  types</span><br><span class="line"><span class="keyword">import</span>  smtplib</span><br><span class="line"><span class="keyword">from</span> email.mime.text <span class="keyword">import</span>  MIMEText</span><br><span class="line"><span class="keyword">import</span>  os</span><br></pre></td></tr></table></figure>
-<h2 id="auto_login">auto login</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">session = requests.session()</span><br><span class="line">user=input(<span class="string">"input your userName:"</span>)      		<span class="comment"># get user name from  console input</span></span><br><span class="line">password=input(<span class="string">"input your password:"</span>)			<span class="comment"># get user password from console input	</span></span><br><span class="line">p=session.post(<span class="string">"http://jwas3.nju.edu.cn:8080/jiaowu/login.do"</span>, &#123;<span class="string">'userName'</span>:user,<span class="string">"password"</span>: password&#125;)   <span class="comment"># This is the login website</span></span><br><span class="line">request_url = session.get(<span class="string">"http://jwas3.nju.edu.cn:8080/jiaowu/student/studentinfo/achievementinfo.do?method=searchTermList"</span>)  <span class="comment"># the web site we want to get the contents from</span></span><br><span class="line">request_text=request_url.text 		<span class="comment"># get web text</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>上面的代码很容易理解，建立一个session会话，首先进行post登录，之后get想要抓取内容的网页来获取内容，requests的使用可以查询其文档</li>
-</ul>
-<p>两个网址是如何得到的呢？</p>
-<ul>
-<li>首先我们打开要抓取的网页，发现它会自动转到一个需要登录的页面</li>
-<li>使用chrome NetWork进行跟踪，此时我们人工登录一次，会发现NetWork中会出现类似login命名的一个post方式请求的项，点击查询，会找到对应请求的Header和Form内容</li>
-<li>模拟上述进行requests即可</li>
-</ul>
-<h2 id="get_content_from_HTML_document">get content from HTML document</h2><h3 id="抓到对应的表格">抓到对应的表格</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">soup=<span class="function"><span class="title">BeautifulSoup</span><span class="params">(request_text)</span></span></span><br><span class="line">content_1=soup<span class="class">.body</span><span class="class">.find_all</span>(<span class="string">"tr"</span>,<span class="string">"TABLE_TR_01"</span>)</span><br><span class="line">content_2=soup<span class="class">.body</span><span class="class">.find_all</span>(<span class="string">"tr"</span>,<span class="string">"TABLE_TR_02"</span>)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>BeautifulSoup 的文档介绍十分简单易懂，可以直接照搬取到想要的内容，<a href="http://www.crummy.com/software/BeautifulSoup/bs4/doc/" target="_blank" rel="external">文档</a></li>
-</ul>
-<h2 id="一个obj类">一个obj类</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">obj</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n_z,n_e,t,c,g)</span>:</span></span><br><span class="line">        self.name_zh=n_z</span><br><span class="line">        self.name_en=n_e</span><br><span class="line">        self.type=t</span><br><span class="line">        self.credit=c</span><br><span class="line">        self.grade=g</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">display</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"name: "</span>+self.name_zh)</span><br><span class="line">        print(<span class="string">"name_en: "</span>+self.name_en)</span><br><span class="line">        print(<span class="string">"type: "</span>+self.type)</span><br><span class="line">        print(<span class="string">"credit: "</span>+self.credit)</span><br><span class="line">        print(<span class="string">"grade: "</span>+self.grade)</span><br><span class="line">        print(<span class="string">""</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getStr</span><span class="params">(self)</span>:</span></span><br><span class="line">        temp=<span class="string">"name: "</span>+self.name_zh+<span class="string">"\nname_en: "</span>+self.name_en+<span class="string">"\ntype: "</span>+self.type+<span class="string">"\ncredit: "</span>+self.credit+<span class="string">"\ngrade: "</span>+self.grade</span><br><span class="line">        temp+=<span class="string">"\n"</span></span><br><span class="line">        <span class="keyword">return</span> temp</span><br></pre></td></tr></table></figure>
-<pre><code>建立了一个obj类方便数据的传递和输出等，obj类的成员就是每个科目的中文名、英文名、科目类型、学分、成绩，<span class="attribute">display</span>用于调试中展示其内容，getStr返回一个输出字符串，用于我们发送邮件时使用
-</code></pre><h2 id="解析内容建立obj对象列表">解析内容建立obj对象列表</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">obj_list=[]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> content_1:</span><br><span class="line">    obj_list.append(parse(i))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> content_2:</span><br><span class="line">    obj_list.append(parse(i))</span><br><span class="line">result=<span class="string">""</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> obj_list:</span><br><span class="line">    <span class="comment">#print("order: "+str(j))</span></span><br><span class="line">    <span class="comment">#i.display()</span></span><br><span class="line">    result+=i.getStr()</span><br><span class="line">    result+=<span class="string">"\n"</span></span><br></pre></td></tr></table></figure>
-<p>接着我们从 content_1 和 content_2 的HTML文件中解析出obj对象的成员并加入到list当中</p>
-<p>下面是上面用到的parse函数</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(content)</span>:</span></span><br><span class="line">    name_zh=<span class="string">""</span>;name_en=<span class="string">""</span>;types=<span class="string">""</span>;study_grade=grade=<span class="number">0</span>;</span><br><span class="line">    pre_list=content.contents                     <span class="comment"># 取content的contents成员列表</span></span><br><span class="line">   <span class="comment"># print(pre_list)</span></span><br><span class="line">    name_zh=pre_list[<span class="number">5</span>].contents[<span class="number">0</span>]               <span class="comment"># 这里的下标5、7、9、11、13是从pre_list的内容中人工获得或者find来获得</span></span><br><span class="line">    name_en=pre_list[<span class="number">7</span>].contents[<span class="number">0</span>]</span><br><span class="line">    type_temp=pre_list[<span class="number">9</span>].contents[<span class="number">0</span>]</span><br><span class="line">    types=<span class="string">""</span>.join(type_temp.split())</span><br><span class="line">    study_grade=pre_list[<span class="number">11</span>].contents[<span class="number">0</span>]</span><br><span class="line">    grade=pre_list[<span class="number">13</span>].contents                   <span class="comment"># 这里没有直接取contents[0]的原因是有无成绩的情况下，这里的项数会有区分，所以单独在下面进行处理</span></span><br><span class="line">    <span class="keyword">if</span> len(grade)==<span class="number">1</span>:</span><br><span class="line">        grade=<span class="string">"无成绩"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        grade=grade[<span class="number">1</span>]</span><br><span class="line">        pattern=re.compile(<span class="string">r'\d+\.\d'</span>)</span><br><span class="line">        grade=pattern.findall(str(grade))[<span class="number">0</span>]</span><br><span class="line">    temp=obj(name_zh,name_en,types,study_grade,grade)   <span class="comment"># 返回处理好的obj对象</span></span><br><span class="line">   <span class="comment">#temp.display()</span></span><br><span class="line">    <span class="keyword">return</span> temp</span><br></pre></td></tr></table></figure>
-<h2 id="发送邮件">发送邮件</h2><h3 id="如何发送？">如何发送？</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sendEmail</span><span class="params">()</span>:</span></span><br><span class="line">    From=<span class="string">"xxxxxx@xx.com"</span></span><br><span class="line">    To=<span class="string">" xxxxxxxx@xx.com"</span></span><br><span class="line">    msg=MIMEText(result.encode(<span class="string">'utf-8'</span>),_charset=<span class="string">'UTF-8'</span>)</span><br><span class="line">    msg[<span class="string">'Subject'</span>]=<span class="string">"成绩有改动"</span></span><br><span class="line">    msg[<span class="string">'From'</span>]=From</span><br><span class="line">    msg[<span class="string">'To'</span>] = To</span><br><span class="line">    s=smtplib.SMTP(<span class="string">'smtp.xx.com'</span>,<span class="number">25</span>)</span><br><span class="line">    s.login(From,<span class="string">"From password"</span>)</span><br><span class="line">    s.sendmail(From,To,msg.as_string())</span><br><span class="line">    s.quit()</span><br></pre></td></tr></table></figure>
-<p>发送邮件的方法也见其文档说明,需要注意的是，计算机名需要是英文的，否则对应的库中的编码会出现问题</p>
-<h3 id="何时发送？">何时发送？</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">file=open(<span class="string">"copy_local.txt"</span>,<span class="string">"r+"</span>)</span><br><span class="line">result_old=<span class="string">""</span></span><br><span class="line"><span class="keyword">for</span> eachline <span class="keyword">in</span> file:</span><br><span class="line">    result_old+=eachline</span><br><span class="line">print(<span class="string">"old: "</span>+result_old)</span><br><span class="line"><span class="keyword">if</span> result_old!=result:</span><br><span class="line">    sendEmail()</span><br><span class="line">    file.seek(<span class="number">0</span>)</span><br><span class="line">    file.truncate()</span><br><span class="line">    file.write(result)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">"nothing has changed."</span>)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
-<ul>
-<li>本地建立一个拷贝，每次抓取后和本地副本进行对比，如果相同则不发送，如果不同，则发送邮件并更新本地副本。</li>
-<li>这里有很多可以优化的地方，比如并不需要比对全文，可以存储一个项数，这样只需要比较科目数即可，也不需要文件IO的时候将全文均读取</li>
-</ul>
-<h1 id="最后">最后</h1><ul>
-<li>如果没有服务器，这个只是一个demo，没有太大的使用价值，不过如果有服务器或者PC一直开机的话，可以设置上述抓取内容的部分定时进行运行，比如每1h运行一次，这样就可以很好的实现预期的功能了；（阿里云可以申请6个月的服务器，不过没有外网ip，只能从内网ip登陆）</li>
-<li>文档和google是我们的好伙伴，上述100行的python代码写的过程中遇到不少细节问题都通过搜索得到了解决；</li>
-<li>假期看书不容易专注的时候给自己定一些小任务来做，也是一种提高啦，而且做完之后更容易看的进去了。</li>
-<li>去刷EoPL了</li>
-</ul>
-
+            <div class="post-more-link text-center">
+              <a class="btn" href="/2015/01/31/一个小demo/#more">
+                阅读全文 &raquo;
+              </a>
+            </div>
           
         
       </div>
@@ -239,31 +217,12 @@
         
           
             <h1 id="“走马观花”的高效学习方式">“走马观花”的高效学习方式</h1><h2 id="入门难吗？">入门难吗？</h2><p>很多时候我们会感慨某个学科极其晦涩，入门很难，比如有机化学、量子力学、范畴论等等。然你身边一定会有很多大神级别的人物，感觉哪门课几乎都差不多，并不存在明显的<br>入门门槛，这是天赋使然吗？</p>
-<p>然而，我在不断的自学摸索当中渐渐的发现，其实一门学科的前50%的知识可以很快的掌握，而提高才是难点所在，此是另外的话题，暂且不论。</p>
-<p>入门难的感受的根本原因在于你在一个并不恰当的时机去学习它，时机是指你的知识储备并不足以应付这门课程。</p>
-<p>比如，编译原理很多人会觉得晦涩而不容易实践，根本原因在于程序设计基础真的只是学习了语言的语法基础，而没有学习它的构造、它的特性和机理所致，众所周知SICP是MIT入门的程序设计课程，夹杂了大量工程思想的同时，对诸如递归、闭包、流、惰性求值、解释器元模型等均有着深入而广泛的介绍，如果有这样的基础再加之对计算机体系的正常认知，就可以很自然的手写词法分析器、语法分析器并翻译成中间码或者另一种语言。</p>
-<p>再比如，有机化学入门难的原因很有可能是物质结构的基础缺乏，对于亲核、亲电性质的认知流于表面，未能建立较为深刻的关联。</p>
-<p>因此，在有足够的基础面前，任何一个学科的基础50%部分是很容易掌握的，当然，后50%、30%、10%是难度递增的，攀登高峰必然要付出更多的精力和代价。</p>
-<h2 id="如何累积充足的基础来使自己游刃有余的入门大多数学科呢？">如何累积充足的基础来使自己游刃有余的入门大多数学科呢？</h2><p>我们当然不可能将每个学科的教材拿来看50%，开个玩笑。</p>
-<p>基础来源于走马观花式的日积月累，很多时候我们再学习新的知识的时候，如果当前10个知识点中有3个我们从前的课程中已经有所介绍，有2个概念我们模糊的可以理解，还有一些好像从网页或者新闻中看到过，剩下的可能是完全未知的内容，这时候我们的学习效率会空前的高涨，也许那几个已经学习过的知识点十分简单，而难点全部集中于后面几个新鲜的内容，但仍然可以有十分好的帮助作用。</p>
-<ul>
-<li><p>首先，很容易想到的一个原因是学习热情和信心，比如记忆单词的过程，一个list 100个词汇，如果有20个认识，而有20个模糊映像，剩下的60个几乎全无印象，比单独背60个完全不<br>认识的单词 心理障碍会小很多；</p>
-</li>
-<li><p>然而，我认为不单单是信心的因素导致，知识的网络本就错综复杂，尤其是再日益交叉的今天，一些课程的划分可能不再那么清晰，因此我们在其他场合积累的经验和知识很有可能真的和新的场景下的原理有着异曲同工之妙的，比如高中很常见的几条定理：楞次定律、勒夏特列原理、稳态，看似风马牛不相及的三个概念，实则有着其共通之处，理解上均可相互借鉴这种动态平衡、此消彼长的思路。</p>
-</li>
-<li><p>再比如在学习离散数学的过程中，突然发现最后书的末尾简单的提了一些计算理论方面的知识，十分浅显，因此我们都可以当做放松来看完，此时这些概念基本是没有多大意义的，因为只是记住了并不是理解到位了，比如图论中图着色的一些问题大多是扩展性质的，你当做涉猎一般了解了一二，学程序设计基础的时候你不满足于教材而在一些经典著作上学到了一些语言范畴的本质特点的归纳（函数式、过程式等）……这些都是一些零碎不成体系的，单独拿出来十分薄弱的知识，甚至都不能作为吹牛的谈资，然而当有了这些零零碎碎基础的你再去阅读龙书之类的经典著作的时候你会发现，很多东西都似曾相识。</p>
-</li>
-</ul>
-<p>另一本经典著作CLRS，学习了程序设计直接来看无疑是天书般的阅读感受，然而你先学学离散数学、概率论之后，会发现CLRS中某些证明反而不够偏数学化，当然很多的习题还是如天书<br>般。</p>
-<h2 id="这种经验并非刻意累积的，而是源于广泛而真挚的兴趣">这种经验并非刻意累积的，而是源于广泛而真挚的兴趣</h2><p>如果我们刻意去累积，很容易走到两个极端：</p>
-<ol>
-<li>觉得每个细节都十分重要，担心会影响后续进展，而导致走马观花变成事无巨细，从而陷身于细节的泥沼当中，不容易自拔；</li>
-<li>另一个方面，在初期的某些积累非但没有正面效果反而干扰你的其它学习的时候，你很有可能否定之前的认知而放弃这种做法。</li>
-</ol>
-<p>坚持下去绝大多数时候是要靠毅力的，但往往只有毅力是不够的，兴趣是最大的毅力来源，只有抛开功利的目的去拥抱知识，才会在日积月累当中收获喜悦。</p>
-<p>走马观花并非指每个领域都随便玩玩就结束，而是再每个领域的学习中，都适当的往旁边走走，随手采摘几多小花，虽微不足道，日积月累，终将获得浓郁的花海。</p>
-<p>完</p>
-
+<p>然而，我在不断的自学摸索当中渐渐的发现，其实一门学科的前50%的知识可以很快的掌握，而提高才是难点所在，此是另外的话题，暂且不论。<br>
+            <div class="post-more-link text-center">
+              <a class="btn" href="/2015/01/31/走马观花的高效学习方法/#more">
+                阅读全文 &raquo;
+              </a>
+            </div>
           
         
       </div>
@@ -339,68 +298,11 @@
 <li>书籍推荐《大话数据结构》，代码质量一般，绝大多数节选自严蔚敏的书籍，但讲述的方式起码能让你入门。</li>
 <li>语言推荐C++或者C<br> 如果你使用没有指针的语言来实现当然也可以，但对于初学者而言这些包装只会让你困惑，而C++或者C不存在这样的问题，十分适合来学习数据结构和算法。</li>
 </ol>
-<ul>
-<li>如果你是计算机专业或者相关专业学生并且基础扎实<br>  写C或者C++基本没有语法障碍，可以熟练的写出链表的各种操作：包括两个有序链表的合并之类的。</li>
-</ul>
-<ol>
-<li><p>书籍推荐：邓俊辉版数据结构（c++ 语言版）<br> 这本书的行文思路和代码质量在同样定位的书籍中绝对是翘楚，完全值得去深入学习。</p>
-</li>
-<li><p>语言一样推荐C++或者C<br> 更推荐C++一些，毕竟使用模板来实现泛型的数据结构更加容易，而且有STL这样的东西可以参照</p>
-</li>
-</ol>
-<h3 id="深入学习">深入学习</h3><ul>
-<li>多动手，实现一个简易的STL库，你可以不必考虑内存分配和迭代器等构造，只需要实现诸如vector.h list.h stack.h queue.h heap.h hashtable.h binarySearchTree.h redBlackTree.h B_tree.h 等即可。</li>
-</ul>
-<h4 id="具体而言：">具体而言：</h4><ol>
-<li><p>对于vector和list:<br> 可以顺便学习排序和查找算法，每种都提供一个接口，常见的包括冒泡、插入、选择、归并、堆排序、快速排序等，对于排序算法不仅要知道实现细节，而且需要掌握其时间复杂度、空间复杂度、是否稳定、常见优化技巧（比如插入排序查找插入位置可以采用二分查找），快速排序可以进行尾递归优化从而保证最坏的空间复杂度也维持在logN、冒泡设定一个标记来减少不必要的循环……</p>
-</li>
-<li><p>对于stack和queue，实现之后用来做来两个基本应用：</p>
-<p> 表达式求值和杨辉三角打印(事实上，在树的层次序遍历以及图的BFS中都会用到类似的队列使用)</p>
-</li>
-<li><p>堆的实现关键在于：<br> maxHeapify buildHeap ，透彻理解这两个基本过程。<br> 在图的Prim算法等地方中会用到二叉堆。</p>
-</li>
-<li><p>二叉树和AVL树和红黑树<br> 二叉树十分简单，关键在于巩固指针操作，写出内存不泄露的二叉树实现；<br> AVL 树的平衡调整十分简单，大多数树将其讲的过于死板而复杂，邓俊辉版十分清晰；<br> 红黑树推荐算法导论的讲解，删除结点的操作比较复杂，需要多加揣摩。</p>
-</li>
-<li><p>B树和B+树<br> 此处推荐邓俊辉版的讲解，个人感觉此处的讲解比算法导论更加容易理解。<br> B树的插入和删除是重点和难点所在，分裂和合并的做法其实十分容易理解，但大多数书籍和资料将其死板的介绍出来，使人难以窥探原因。</p>
-</li>
-<li><p>哈希表<br> 掌握链接法解决冲突以及线性探测的方法，更重要的是了解哈希函数的选取方式以及背后的数学道理（需要数论的一些背景）</p>
-</li>
-<li><p>图论<br> 图论的学习方式推荐先学习或者复习离散数学或者图论，将背后的数学原理学会之后实现起来方能随心所欲。<br> 基本的也就是BFS、DFS、最小生成树、最短路径、流网络，先学《离散数学及其应用》再看算法导论，十分容易理解。</p>
-</li>
-<li><p>其它<br> 诸如广义表、稀疏矩阵之类的数据结构，了解其背景即可，广义表的最佳学习场所在函数式编程当中，cons car cdr的世界十分博大。</p>
-</li>
-</ol>
-<ul>
-<li>多总结，了解其背后的数学原理</li>
-</ul>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">+ </span>这里的数学原理并非是严格的图论证明之类的，而是知道它背后的道理所在。</span><br><span class="line">   推荐一篇博文，王垠大大的《原因和证明》，可以在他的博客中找到。</span><br><span class="line"><span class="bullet">+  </span>最重要的思想在于，某种算法具有这个性质和能力并不是因为我们证明了它才有，而是它本身具有某种更深层次的特性导致的。了解背后的本质</span><br><span class="line">会极大的帮助我们理解算法，并且很难忘记。</span><br></pre></td></tr></table></figure>
-<p>　</p>
-<h2 id="题目">题目</h2><p>网上很多算法题目可以刷，比如leecode之类，学习的时候不需要大范围的刷题，理解更加重要，不再赘言。</p>
-<h3 id="拒绝糟糕的书">拒绝糟糕的书</h3><p>数据结构的书籍十分繁杂，稍有不甚就会在一些很糟糕的书籍中浪费时间，糟糕的表现一般有：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>示例代码充斥着错误；</span><br><span class="line"><span class="bullet">2. </span>代码试图给你展示很多语言方面的特性而往往做的很差；</span><br><span class="line"><span class="bullet">3. </span>讲解的时候永远是塞给你知识而非给你展示；</span><br><span class="line"><span class="bullet">4. </span>避而不谈证明或者永远只有机械化的对理解好处的证明；</span><br><span class="line"><span class="bullet">5. </span>在细枝末节处大写特写使人云里雾里，而不是一上手先告诉你这种数据结构的适合场景和需要完成的接口；</span><br><span class="line"><span class="bullet">6. </span>毫无追求，以解题为讲解目的；</span><br></pre></td></tr></table></figure>
-<p><strong>好书推荐两本，上面已经提到，这里强调一下</strong>：</p>
-<ul>
-<li><p>《算法导论》 （中英都可以）</p>
-<ol>
-<li>读算法导论要注意取舍内容，比如重要的算法思想和每种数据结构适合的场景以及需要提供哪些接口等等，以及动态规划、贪心、分治等基本思想。</li>
-<li>习题可以选作，不需要强求；</li>
-<li>纯粹的数学证明不影响后续阅读的可以忽略，需要的时候再来查看。</li>
-</ol>
-</li>
-</ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">开始我觉得第三版中文版翻译的烂爆了，所以在看了几章之后买了第二版的英文版</span><br><span class="line">现在回过头来看，翻译的其实差强人意，只能说当初基础比较差，不懂得取舍书中内容所致。</span><br><span class="line">但英文版确实十分易读，英文有自信的还是读英文的好。</span><br></pre></td></tr></table></figure>
-<ul>
-<li>《数据结构（c++语言版）邓俊辉编》）</li>
-</ul>
-<ol>
-<li>如果对于某些实现存在不满或者疑惑，可以参考STL的相关实现；</li>
-<li>原理部分讲解的还是十分清晰的，最重要的是告诉你为什么要介绍这种数据结构，实现的时候要提供怎样的抽象和接口；</li>
-<li>内容的选取很合适；</li>
-</ol>
-<blockquote>
-<p>个人的一点拙见，希望能有所帮助.</p>
-</blockquote>
-
+            <div class="post-more-link text-center">
+              <a class="btn" href="/2015/01/03/学习数据结构的正确姿势/#more">
+                阅读全文 &raquo;
+              </a>
+            </div>
           
         
       </div>
@@ -469,31 +371,19 @@
 
         
           
-            <pre><code>之前按照 SICP 的实现方式修改简化实现了一个简易的scheme 解释器，然后改用 python 实现了一次(其实是两次，还重写了一次)。
-中途又去玩 haskell 去了；顺便一提，了解 haskell 和 scheme 十分重要，二者都包含很多独特重要的思想，haskell 推荐《haskell 趣学指南》十分通俗易懂。 haskell 一个特性是惰性求值，其实 SICP中第三章介绍了流和<span class="command">delay</span> evaluation ，第四章后面实现了lazy evaluation的变形，这篇文章是解决SICP中实现<span class="command">delay</span> evaluation的一个小问题。
-</code></pre><p>SICP 第三章介绍流的时候介绍了delay eval的实现，然而你如果直接按照书上的写法在racket里面运行的话，会无法实现“delay”！</p>
+            <ul>
+<li>之前按照 SICP 的实现方式修改简化实现了一个简易的scheme 解释器，然后改用 python 实现了一次(其实是两次，还重写了一次)。</li>
+<li>中途又去玩 haskell 去了；顺便一提，了解 haskell 和 scheme 十分重要，二者都包含很多独特重要的思想，haskell 推荐《haskell 趣学指南》十分通俗易懂。 haskell 一个特性是惰性求值，其实 SICP中第三章介绍了流和delay evaluation ，第四章后面实现了lazy evaluation的变形，这篇文章是解决SICP中实现delay evaluation的一个小问题。</li>
+</ul>
+<p>SICP 第三章介绍流的时候介绍了delay eval的实现，然而你如果直接按照书上的写法在racket里面运行的话，会无法实现“delay”！</p>
 <ul>
 <li>直接按照书写的话大概是这个样子,包含一个重要的优化（对于同一个表达式只求值一次）：</li>
 </ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define (memory-proc proc) &#10;&#9;(let ([result false] &#10;&#9;&#9;  [first-time-to-run? true]&#10;&#9;&#9;)&#10;&#9;(lambda ()&#10;&#9;(cond&#10;&#9;&#9;[first-time-to-run? (begin (set! result (proc)) (set! first-time-to-run? false) result)] &#10;&#9;&#9;[else result]))))&#10;(define (delay s)&#10;&#9;(memory-proc (lambda() s)))&#10;(define (force d)&#10;&#9;(d))&#10;(define (stream-car a)&#10;&#9;(car a))&#10;(define (stream-cdr a)&#10;&#9;(force (cdr a)))&#10;(define (stream-cons a b)&#10;&#9;(cons a (delay b)))</span><br></pre></td></tr></table></figure>
-<p>容易验证它是没有delay性质的，可以使用练习3.51，当然你要先完成map enumerate filter ref等操作，这些操作和不用流一样，十分简单。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define (stream-ref ls n) &#10;&#9;(cond &#10;&#9;&#9;[(= n 0) (stream-car ls)]&#10;&#9;&#9;[else (stream-ref (stream-cdr ls) (- n 1))] ))&#10;(define (stream-map proc s) &#10;&#9;(cond&#10;&#9;&#9;[(null? s) stream-nil]&#10;&#9;&#9;[else (stream-cons (proc (stream-car s) ) (stream-map proc (stream-cdr s))  )]))&#10;(define (stream-enumerate-interval beg end)&#10;&#9;(cond&#10;&#9;&#9;[(&#62; beg end) stream-nil]&#10;&#9;&#9;[else (stream-cons beg (stream-enumerate-interval (+ beg 1) end )  )]))</span><br></pre></td></tr></table></figure>
-<p>你运行3.51的例子的时候发现，构造完成列表的时候已经输出了1..10，优化的那个倒是起了作用，求值过的没有反复求值。。。</p>
-<ul>
-<li><p>问题出在stream-cons 和 delay 的定义上<br>SICP 中下面的注释中说，cons 和 delay 必须定义为特殊形式，因此我们上面的定义实际上是无效的，因为racket 默认是call by value ，也就是说定义的时候就会去求值它的参数，因此我们调用的时候包装上lambda外壳马上又脱去，实际上没有发挥作用。</p>
-</li>
-<li><p>解决方法在于应用宏</p>
-</li>
-</ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define-syntax delay&#10;&#9;(syntax-rules ()&#10;&#9; ((delay a)&#10;&#9; (memory-proc (lambda () a)))))&#10;(define-syntax stream-cons&#10;&#9;(syntax-rules ()&#10;&#9;&#9;((stream-cons a b) &#10;&#9;&#9;(cons a (delay b)))))</span><br></pre></td></tr></table></figure>
-<p>上面的代码可以很好的运行，可以维持我们对于delay 和 force 的界面约定，而SICP中反复提到这些实现的方法有很多，只要可以满足这样的功能界面约定即可了。</p>
-<h2 id="最后">最后</h2><p> 之后的内容就可以比较顺畅的阅读了，SICP 的习题设计十分有用，强烈建议阅读的时候可以都做一遍，网上wiki中有答案可以供参考。练习有用体现在两点：</p>
-<ol>
-<li>很好的巩固前面的讲解；</li>
-<li>它实现的一些函数和解决的问题都是普适性很强的内容，比如第二章的map filter foldl foldr accumlate enumeration等等。</li>
-<li>《a little schemer》一书也强烈推荐，可以在SICP看着间隙直接看，看起来十分轻松，但可以收获扎实的scheme基础和更深刻的理解。</li>
-</ol>
-
+            <div class="post-more-link text-center">
+              <a class="btn" href="/2014/12/23/racket模拟延时求值/#more">
+                阅读全文 &raquo;
+              </a>
+            </div>
           
         
       </div>
@@ -571,38 +461,11 @@
 <li>DFS 结果中包含 d(u) 和 f(u)两个重要的参数，尤其是f(u)。解释一下这两个参数，d（u）表示开始访问顶点时的时间，f（u）表示访问结束的时间。</li>
 <li><strong>对于有向的无环图，DFS 产生的f(u) 按照降序排列即可得到其拓扑排序(由小到大)</strong></li>
 </ul>
-<h3 id="证明上述结论：">证明上述结论：</h3><p>首先，DFS 中的边分为树边、后向边、前向边和横向边</p>
-<ul>
-<li>定义：树边是指DFS生成的深度优先树（森林）中存在的边；</li>
-</ul>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>后向边是指深度优先树中 从某结点指向其祖先结点的边；</span><br><span class="line"><span class="bullet">2. </span>前向边是指深度优先树中  从某结点指向其子孙结点的边；</span><br><span class="line"><span class="bullet">3. </span>横向边是指非树边、非前向边、非后向边。</span><br></pre></td></tr></table></figure>
-<ul>
-<li>判断边种类的方法：<br>  当我们第一次访问 u-&gt; v的时候，</li>
-</ul>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>如果v是白色，则为树边；</span><br><span class="line"><span class="bullet">2. </span>若为灰色，则为后向边；</span><br><span class="line"><span class="bullet">3. </span>若为黑色，则为前向或者横向边</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>其中后向边对我们而言十分重要，因为<strong>一个有向图是无环路的 等价于 DFS产生的深度优先树中没有后向边</strong></p>
-<p>  PS: 这句话很容易证明，因为如果有后向边，也就是说存在指向祖先结点的边，而祖先结点之所以叫做祖先结点是因为有从它出发抵达当前结点的边，因此构成回路；反之，如果图中有一个环路，则在访问的过程中必然会有后向边。</p>
-</li>
-<li><p>对于无环有向图，DFS 可以产生拓扑排序</p>
-<p>  在上一条的基础上，无环说明图中没有后向边，也就是说只有树边或者前向边、横向边：<br>  那么，访问过程中对于任意一条边u-&gt;v,v 非白即黑</p>
-</li>
-</ul>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">   <span class="number">1</span>. v 是白的，则v没有被访问，这条边是树边，而祖先结点总是比子结点更晚访问结束，所以满足<span class="function"><span class="title">f</span><span class="params">(u)</span></span> &gt; <span class="function"><span class="title">f</span><span class="params">(v)</span></span></span><br><span class="line">   <span class="number">2</span>. v 是黑的，那么此时v已经访问完毕而u尚在访问中，则  <span class="function"><span class="title">f</span><span class="params">(u)</span></span> 一定大于 <span class="function"><span class="title">f</span><span class="params">(v)</span></span></span><br><span class="line"><span class="number">3</span>. 因此，也就是说，拓扑排序中所有的边u-&gt;v都满足<span class="function"><span class="title">f</span><span class="params">(u)</span></span>-&gt;<span class="function"><span class="title">f</span><span class="params">(v)</span></span>,</span><br><span class="line"><span class="number">4</span>. 因此我们通过DFS可以产生无环有向图的拓扑排序。</span><br></pre></td></tr></table></figure>
-<ul>
-<li>如何判断是否有环呢？<br>  非常简单，上面的证明中已经提到了，访问u-&gt;v的过程中，如果发现v为灰色，则一定有后向边，则有环路。</li>
-</ul>
-<h2 id="借助入度为0的顶点集合实现拓扑排序">借助入度为0的顶点集合实现拓扑排序</h2><ul>
-<li><p>这种方法则更加简单一些，首先我们找到顶点集合中所有入度为0的顶点的队列</p>
-<p>  找入度问0的顶点的原因在于，入度为0的顶点是当前偏序关系的极大，它们之间可能无法比较，但某个入度为0的顶点的偏序大小是一定大于与之连通的其它顶点的，因此我们首先找出整个图中偏序的极大点；</p>
-</li>
-<li>接着我们遍历这个队列，对于每一个顶点，删除这个顶点以及它的出边并更新与之相邻顶点的入度，如果与之相邻的顶点入度减小为0，则加入队列；</li>
-<li><p>重复上述过程，到图中最后一个顶点也删除完毕的时候:</p>
-<p>  如果图中的边尚未删除完毕，则说明这边条连接了偏序较小的顶点u和偏序较大的顶点v，而且这条边蕴含着偏序u&gt;v,而u和v不是同一个顶点，则蕴含u、v之间存在双向连通，即存在回路；</p>
-<p>  如果边也删除完毕，则成功实现拓扑排序，加入队列的顺序就是拓扑顺序。(偏序不一定是全序关系，因此并非两两都可以比较，因此不可比较的顶点之间的顺序实际上是无所谓的)</p>
-</li>
-</ul>
-
+            <div class="post-more-link text-center">
+              <a class="btn" href="/2014/12/18/拓扑排序的两种做法/#more">
+                阅读全文 &raquo;
+              </a>
+            </div>
           
         
       </div>
@@ -668,7 +531,7 @@
             <span class="site-state-item-name">标签</span>
         </div>
         <div class="site-state-item site-state-pages">
-            <span class="site-state-item-count">0</span>
+            <span class="site-state-item-count">2</span>
             <span class="site-state-item-name">页面</span>
         </div>
       </div>

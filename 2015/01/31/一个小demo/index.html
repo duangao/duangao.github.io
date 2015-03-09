@@ -72,6 +72,14 @@
         </a>
       </li>
     
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          关于
+        </a>
+      </li>
+    
   </ul>
 
 
@@ -129,6 +137,7 @@
 <li>页面指定内容抓取， 使用BeautifulSoup 包实现；</li>
 <li>邮件发送 ，使用SMTP 和 email 包实现</li>
 </ul>
+<a id="more"></a>
 <h1 id="具体内容">具体内容</h1><h2 id="涉及到的import">涉及到的import</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests,re</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span>  types</span><br><span class="line"><span class="keyword">import</span>  smtplib</span><br><span class="line"><span class="keyword">from</span> email.mime.text <span class="keyword">import</span>  MIMEText</span><br><span class="line"><span class="keyword">import</span>  os</span><br></pre></td></tr></table></figure>
 <h2 id="auto_login">auto login</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">session = requests.session()</span><br><span class="line">user=input(<span class="string">"input your userName:"</span>)      		<span class="comment"># get user name from  console input</span></span><br><span class="line">password=input(<span class="string">"input your password:"</span>)			<span class="comment"># get user password from console input	</span></span><br><span class="line">p=session.post(<span class="string">"http://jwas3.nju.edu.cn:8080/jiaowu/login.do"</span>, &#123;<span class="string">'userName'</span>:user,<span class="string">"password"</span>: password&#125;)   <span class="comment"># This is the login website</span></span><br><span class="line">request_url = session.get(<span class="string">"http://jwas3.nju.edu.cn:8080/jiaowu/student/studentinfo/achievementinfo.do?method=searchTermList"</span>)  <span class="comment"># the web site we want to get the contents from</span></span><br><span class="line">request_text=request_url.text 		<span class="comment"># get web text</span></span><br></pre></td></tr></table></figure>
 <ul>
@@ -252,7 +261,7 @@
             <span class="site-state-item-name">标签</span>
         </div>
         <div class="site-state-item site-state-pages">
-            <span class="site-state-item-count">0</span>
+            <span class="site-state-item-count">2</span>
             <span class="site-state-item-name">页面</span>
         </div>
       </div>
