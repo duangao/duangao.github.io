@@ -145,15 +145,11 @@
         
           
             <h2 id="lambda_calculus">lambda calculus</h2><ul>
-<li><p>BNF 文法定义</p>
-<ul>
-<li><expr> ::= <identifier></li>
-<li><expr> ::= lambda <identifier-list> -&gt; <expr></li>
-<li><expr> ::= (<expr> <expr>)</li>
+<li>BNF 文法定义</li>
 </ul>
-</li>
-<li><p>BNF 定义中，前两条定义了lambda 表达式的格式，第三条实际上是其调用方法。</p>
-</li>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+ <span class="tag">&lt;<span class="title">expr</span>&gt;</span> ::= <span class="tag">&lt;<span class="title">identifier</span>&gt;</span></span><br><span class="line">+ <span class="tag">&lt;<span class="title">expr</span>&gt;</span> ::= lambda <span class="tag">&lt;<span class="title">identifier-list</span>&gt;</span> -&gt; <span class="tag">&lt;<span class="title">expr</span>&gt;</span></span><br><span class="line">+ <span class="tag">&lt;<span class="title">expr</span>&gt;</span> ::= (<span class="tag">&lt;<span class="title">expr</span>&gt;</span> <span class="tag">&lt;<span class="title">expr</span>&gt;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>BNF 定义中，前两条定义了lambda 表达式的格式，第三条实际上是其调用方法。</li>
 </ul>
             <div class="post-more-link text-center">
               <a class="btn" href="/2015/03/16/Y组合子/#more">
