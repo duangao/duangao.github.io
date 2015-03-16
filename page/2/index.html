@@ -27,11 +27,13 @@
 
 
 
-  <title> 标签: 学习方法 // 羽加迪姆勒维奥萨 </title>
+  <title> 羽加迪姆勒维奥萨 </title>
 </head>
 
 <body>
-  <div class="container one-column ">
+  <div class="container one-column 
+   page-home 
+">
     <div class="headband"></div>
 
     <div id="header" class="header">
@@ -93,12 +95,8 @@
             
           
 
-          <div id="posts" class="posts-collapse">
+          <div id="posts" class="posts-expand">
             
-  <div class="collection-title">
-    <h2 >学习方法</h2>
-  </div>
-
   
     
 
@@ -111,8 +109,8 @@
           
           
             
-              <a class="post-title-link" href="/2015/01/31/走马观花的高效学习方法/">
-                走马观花的高效学习方法
+              <a class="post-title-link" href="/2014/12/18/拓扑排序的两种做法/">
+                拓扑排序的两种做法
               </a>
             
           
@@ -122,15 +120,15 @@
       <div class="post-meta">
           <span class="post-time">
             
-              01-31
+              发表于 2014-12-18
             
           </span>
         
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/01/31/走马观花的高效学习方法/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/走马观花的高效学习方法/"></span>
+            <a href="/2014/12/18/拓扑排序的两种做法/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/18/拓扑排序的两种做法/"></span>
             </a>
           </span>
           
@@ -139,7 +137,51 @@
     </div>
 
     
+      <div class="post-body">
 
+        
+        
+
+        
+          
+            <ul>
+<li>DFS</li>
+<li>入度为0的顶点集合</li>
+</ul>
+<h2 id="利用_DFS_实现拓扑排序">利用 DFS 实现拓扑排序</h2><ul>
+<li>拓扑排序是维持一个偏序关系而不一定是全序的；通俗点来讲，就是将拓扑排序后的顶点从左往右排列好之后，满足所有的边都朝向一个方向，这样就一定是偏序意义上的排序了；</li>
+<li>DFS 结果中包含 d(u) 和 f(u)两个重要的参数，尤其是f(u)。解释一下这两个参数，d（u）表示开始访问顶点时的时间，f（u）表示访问结束的时间。</li>
+<li><strong>对于有向的无环图，DFS 产生的f(u) 按照降序排列即可得到其拓扑排序(由小到大)</strong></li>
+</ul>
+            <div class="post-more-link text-center">
+              <a class="btn" href="/2014/12/18/拓扑排序的两种做法/#more">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">
+                #算法
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+        
+          <div class="post-eof"></div>
+        
+      </div>
     
   </div>
 
@@ -148,6 +190,10 @@
 
           </div>
 
+          
+            <div class="pagination">
+              <a class="extend prev" rel="prev" href="/">&laquo;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+            </div>
           
         </div>
 
@@ -288,6 +334,17 @@
   <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
 
   
+  <script type="text/javascript" id="motion.page.home">
+    $(document).ready(function () {
+      $.Velocity.RunSequence([
+        { e: $('.brand'), p: { opacity: 1 }, o: { duration: 100 } },
+        { e: $('.logo'), p: { opacity: 1, top: 0 }, o: { duration: 50} },
+        { e: $('.site-title'), p: { opacity: 1, top: 0 }, o: { duration: 200, sequenceQueue: false } }
+      ]);
+      $('.menu-item').velocity('transition.slideDownIn', {display: null});
+    });
+  </script>
+
 
   <script type="text/javascript" id="motion.global">
   $(document).ready(function () {
