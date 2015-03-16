@@ -183,7 +183,62 @@
 <blockquote>
 <p>Y表示Y组合子，F表示某个非递归函数，f表示对应的递归版本 </p>
 </blockquote>
-<h2 id="Y组合子的推演">Y组合子的推演</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;; set the true recursive function is f, and the non-recursive one is F(like almost-factorial)&#10;;; f = (F f)        &#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;....................(1)&#10;;; so f is the fixed-point of F&#10;;; def:  (Y F)=f   &#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;.....................(2)&#10;&#10;;; combine (1) and (2):&#10;;; (Y F) = (F f) = (F (Y F))  &#9;&#9;&#9;&#9;&#9;&#9;..........(3)&#10;&#10;&#10;&#10;;; first step, &#20266;&#36882;&#24402;&#20989;&#25968;&#10;(define almost-factorial &#10;  (lambda (self)&#10;     (lambda (n)&#10;      (cond [(= n 0) 1] &#10;            [else (* n (self (- n 1)))]))))&#10;&#10;&#10;;;&#19979;&#38754;&#30340;&#20989;&#25968;&#21487;&#20197;&#22312;strcit&#21644;lazy&#27714;&#20540;&#19979;&#24037;&#20316;&#10;&#10;(define part-factorial&#10;   (lambda (self)&#10;     (lambda (n)&#10;         (cond [(= n 0) 1]&#10;               [else (* n  ( (self self)  (- n 1) )  )]&#10;              ) )))&#10;&#10;(define f (part-factorial part-factorial))&#10;&#10;&#10;;; &#25913;&#20889;&#19978;&#38754;&#30340;&#20989;&#25968;&#65292;&#23558;self self&#32467;&#26500;&#25277;&#25552;&#20986;&#26469;&#65292;&#36825;&#20010;&#29256;&#26412;&#20165;&#21487;&#20197;&#22312;lazy &#27714;&#20540;&#19979;&#24037;&#20316;&#65292;&#10;;;&#21542;&#21017;let &#34920;&#36798;&#24335;&#20250;&#19981;&#26029;&#25193;&#23637;&#26080;&#27861;&#32467;&#26463;&#10;&#10;(define part-factorial-lazy &#10;   (lambda (self) &#10;     (  let ([f (self self)])&#10;         (lambda (n) &#10;           ( cond [(= n 0) 1]&#10;                  [else (* n (f (- n 1)))]&#10;                  )))))&#10;(define f-lazy (part-factorial-lazy part-factorial-lazy))&#10;&#10;;; let &#34920;&#36798;&#24335;&#26159;lambda&#34920;&#36798;&#24335;&#30340;&#35821;&#27861;&#31958;&#65292;&#26367;&#25442;&#10;;; (let ([x expr1]) (expr2) &#60;=&#62;  ( (lambda (x) expr2) expr1)&#10;&#10;(define part-factorial-lazy &#10;  (lambda (self) &#10;    ( &#10;     (lambda (f) &#10;       (lambda (n)&#10;         ( cond [(= n 0) 1] &#10;                [else (* n (f (- n 1)))])))   &#10;     (self self))))&#10;&#10;(define f-lazy (part-factorial-lazy part-factorial-lazy))&#10;&#10;&#10;;; &#27880;&#24847;&#19978;&#38754;&#30340;&#20989;&#25968;&#20869;&#37096;&#30340;&#20989;&#25968;&#23601;&#26159;&#20043;&#21069;&#23450;&#20041;&#30340;almost-factorial&#10;(define (part-factorial-lazy self)&#10;  (almost-factorial (self self)))&#10;&#10;(define f-lazy (part-factorial-lazy part-factorial-lazy))&#10;&#10;&#10;;; &#23558;part-factorial-lazy&#30340;&#23450;&#20041;&#25918;&#22312; f &#20869;&#37096;&#26469;&#31616;&#21270;&#10;(define fact&#10;  (let ([part-factorial-lazy (lambda (self) (almost-factorial (self self)))])&#10;    (part-factorial-lazy part-factorial-lazy) ))&#10;&#10;;; &#25226;&#19978;&#38754;&#24335;&#23376;&#37324;&#38754;&#30340;part-factorial-lazy&#25442;&#25104;x&#65292;&#20415;&#20110;&#38405;&#35835;&#10;(define fact&#10;  (let ([x (lambda (self) (almost-factorial (self self)))])&#10;    (x x) ))&#10;&#10;;; &#20877;&#27425;&#26367;&#25442;let&#34920;&#36798;&#24335;&#21040;&#20854;&#31561;&#20215;&#30340;lambda&#24418;&#24335;&#10;(define fact&#10;  (&#10;    (lambda (x) (x x) )&#10;    (lambda(self) (almost-factorial (self self)) )&#10;    ))&#10;&#10;;; &#23558;self&#20063;&#26367;&#25442;&#25104;x&#65292;&#20415;&#20110;&#38405;&#35835;&#10;;; &#27880;&#24847; &#36825;&#37324;&#30340;x&#21644;&#20043;&#21069;&#30340;x&#24182;&#19981;&#26159;&#21516;&#19968;&#20010;&#21464;&#37327;&#65292;&#20174;&#20316;&#29992;&#22495;&#19978;&#21487;&#20197;&#30475;&#20986;&#26469;&#12290;&#10;(define fact&#10;  (&#10;    (lambda (x) (x x) )&#10;    (lambda(x) (almost-factorial (x x)) )&#10;    ))&#10;&#10;&#10;;; lazy-Y&#10;(define  ( Y-lazy non-recursive-f)&#10;    ( (lambda (x) (x x)) &#10;      (lambda (x) (non-recursive-f (x x)))))&#10;&#10;(define factorial (Y-lazy almost-factorial))&#10;&#10;&#10;;; &#23558;&#19978;&#38754;&#23450;&#20041;&#20013; &#31532;&#20108;&#20010;lambda&#34920;&#36798;&#24335;&#20316;&#20026;&#21442;&#25968;&#20195;&#20837;&#31532;&#19968;&#20010;&#20013;&#10;&#10;(define  ( Y-lazy non-recursive-f)&#10;    ( (lambda (x)  (non-recursive-f (x x))) &#10;      (lambda (x) (non-recursive-f (x x)))))&#10;&#10;(define factorial (Y-lazy almost-factorial))&#10;&#10;&#10;;; &#35777;&#26126;&#20854;&#27491;&#30830;&#24615;&#10;&#10;;; we should prove (Y F)=(F (Y F))&#10;&#10;#|&#10;&#10;(Y F) = ( (lambda(x) (F (x x)))  (lambda (x) (F (x x)))  )&#10;      = (F (lambda (x) (F (x x))) (lambda (x) (F (x x))))&#10;      = (F (Y F))&#10;|#</span><br></pre></td></tr></table></figure>
+<h2 id="Y组合子的推演">Y组合子的推演</h2><ul>
+<li>推导一个Y组合子的性质</li>
+</ul>
+<p>f 为真正的递归函数，F为伪递归函数，类似于下文的almost-factorial</p>
+<p> f = (F f)                                        ………………..(1)<br> so f is the fixed-point of F<br> def:  (Y F)=f                                    …………………(2)<br> combine (1) and (2):</p>
+<p><strong> (Y F) = (F f) = (F (Y F))  </strong>                   ……………..(3)</p>
+<ul>
+<li>first step, 伪递归函数</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define almost-factorial &#10;  (lambda (self)&#10;     (lambda (n)&#10;      (cond [(= n 0) 1] &#10;            [else (* n (self (- n 1)))]))))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>下面的函数可以在strcit和lazy求值下工作</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define part-factorial&#10;   (lambda (self)&#10;     (lambda (n)&#10;         (cond [(= n 0) 1]&#10;               [else (* n  ( (self self)  (- n 1) )  )]&#10;              ) )))&#10; (define f (part-factorial part-factorial))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>改写上面的函数，将self self结构抽提出来，这个版本仅可以在lazy 求值下工作，<br>否则let 表达式会不断扩展无法结束</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define part-factorial-lazy &#10;   (lambda (self) &#10;     (  let ([f (self self)])&#10;         (lambda (n) &#10;           ( cond [(= n 0) 1]&#10;                  [else (* n (f (- n 1)))]&#10;                  )))))&#10;(define f-lazy (part-factorial-lazy part-factorial-lazy))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>let 表达式是lambda表达式的语法糖，替换<br>(let ([x expr1]) (expr2) &lt;=&gt;  ( (lambda (x) expr2) expr1)</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define part-factorial-lazy &#10;  (lambda (self) &#10;    ( &#10;     (lambda (f) &#10;       (lambda (n)&#10;         ( cond [(= n 0) 1] &#10;                [else (* n (f (- n 1)))])))   &#10;     (self self))))&#10;&#10;(define f-lazy (part-factorial-lazy part-factorial-lazy))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意上面的函数内部的函数就是之前定义的almost-factorial</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define (part-factorial-lazy self)&#10;  (almost-factorial (self self)))&#10;&#10;(define f-lazy (part-factorial-lazy part-factorial-lazy))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将part-factorial-lazy的定义放在 f 内部来简化</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define fact&#10;  (let ([part-factorial-lazy (lambda (self) (almost-factorial (self self)))])&#10;    (part-factorial-lazy part-factorial-lazy) ))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>把上面式子里面的part-factorial-lazy换成x，便于阅读</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define fact&#10;  (let ([x (lambda (self) (almost-factorial (self self)))])&#10;    (x x) ))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>再次替换let表达式到其等价的lambda形式</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define fact&#10;  (&#10;    (lambda (x) (x x) )&#10;    (lambda(self) (almost-factorial (self self)) )&#10;    ))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将self也替换成x，便于阅读<br>注意 这里的x和之前的x并不是同一个变量，从作用域上可以看出来。</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define fact&#10;  (&#10;    (lambda (x) (x x) )&#10;    (lambda(x) (almost-factorial (x x)) )&#10;    ))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>lazy-Y</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define  ( Y-lazy non-recursive-f)&#10;    ( (lambda (x) (x x)) &#10;      (lambda (x) (non-recursive-f (x x)))))&#10;&#10;(define factorial (Y-lazy almost-factorial))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将上面定义中 第二个lambda表达式作为参数代入第一个中</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define  ( Y-lazy non-recursive-f)&#10;    ( (lambda (x)  (non-recursive-f (x x))) &#10;      (lambda (x) (non-recursive-f (x x)))))&#10;&#10;(define factorial (Y-lazy almost-factorial))</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>证明其正确性</p>
+<p>   we should prove (Y F)=(F (Y F))</p>
+</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Y F) = ( (lambda(x) (F (x x)))  (lambda (x) (F (x x)))  )&#10;      = (F (lambda (x) (F (x x))) (lambda (x) (F (x x))))&#10;      = (F (Y F))</span><br></pre></td></tr></table></figure>
 <h2 id="strict_版本的Y组合子">strict 版本的Y组合子</h2><p>待续</p>
 
         
