@@ -54,7 +54,7 @@
       <li class="menu-item menu-item-home">
         <a href="/">
           <i class="menu-item-icon icon-home"></i> <br />
-          Accueil
+          首页
         </a>
       </li>
     
@@ -62,7 +62,7 @@
       <li class="menu-item menu-item-archives">
         <a href="/archives">
           <i class="menu-item-icon icon-archives"></i> <br />
-          Archives
+          归档
         </a>
       </li>
     
@@ -70,7 +70,7 @@
       <li class="menu-item menu-item-tags">
         <a href="/tags">
           <i class="menu-item-icon icon-tags"></i> <br />
-          Tags
+          标签
         </a>
       </li>
     
@@ -78,7 +78,7 @@
       <li class="menu-item menu-item-about">
         <a href="/about">
           <i class="menu-item-icon icon-about"></i> <br />
-          A propos
+          关于
         </a>
       </li>
     
@@ -109,6 +109,94 @@
           
           
             
+              <a class="post-title-link" href="/2014/12/23/racket模拟延时求值/">
+                racket模拟延时求值
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+          <span class="post-time">
+            
+              发表于 2014-12-23
+            
+          </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/23/racket模拟延时求值/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/23/racket模拟延时求值/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          
+            <ul>
+<li>之前按照 SICP 的实现方式修改简化实现了一个简易的scheme 解释器，然后改用 python 实现了一次(其实是两次，还重写了一次)。</li>
+<li>中途又去玩 haskell 去了；顺便一提，了解 haskell 和 scheme 十分重要，二者都包含很多独特重要的思想，haskell 推荐《haskell 趣学指南》十分通俗易懂。 haskell 一个特性是惰性求值，其实 SICP中第三章介绍了流和delay evaluation ，第四章后面实现了lazy evaluation的变形，这篇文章是解决SICP中实现delay evaluation的一个小问题。</li>
+</ul>
+<p>SICP 第三章介绍流的时候介绍了delay eval的实现，然而你如果直接按照书上的写法在racket里面运行的话，会无法实现“delay”！</p>
+<ul>
+<li>直接按照书写的话大概是这个样子,包含一个重要的优化（对于同一个表达式只求值一次）：</li>
+</ul>
+            <div class="post-more-link text-center">
+              <a class="btn" href="/2014/12/23/racket模拟延时求值/#more">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/racket/">
+                #racket
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+        
+          <div class="post-eof"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/12/18/拓扑排序的两种做法/">
                 拓扑排序的两种做法
               </a>
@@ -120,7 +208,7 @@
       <div class="post-meta">
           <span class="post-time">
             
-              Posté le 2014-12-18
+              发表于 2014-12-18
             
           </span>
         
@@ -155,7 +243,7 @@
 </ul>
             <div class="post-more-link text-center">
               <a class="btn" href="/2014/12/18/拓扑排序的两种做法/#more">
-                Lire la suite &raquo;
+                阅读全文 &raquo;
               </a>
             </div>
           
@@ -219,16 +307,16 @@
       <p class="site-description motion-element">Programmer's personal blog</p>
       <div class="site-state motion-element">
         <div class="site-state-item site-state-posts">
-          <span class="site-state-item-count">6</span>
-          <span class="site-state-item-name">articles</span>
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
         </div>
         <div class="site-state-item site-state-tags">
             <span class="site-state-item-count">5</span>
-            <span class="site-state-item-name">tags</span>
+            <span class="site-state-item-name">标签</span>
         </div>
         <div class="site-state-item site-state-pages">
             <span class="site-state-item-count">2</span>
-            <span class="site-state-item-name">pages</span>
+            <span class="site-state-item-name">页面</span>
         </div>
       </div>
 
@@ -275,11 +363,11 @@
 </div>
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
-  Thème - <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT</a>
+  主题 - <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT</a>
 </div>
 
 
