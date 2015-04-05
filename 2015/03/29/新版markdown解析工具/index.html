@@ -27,7 +27,7 @@
 
 
 
-  <title> 一个小demo // 羽加迪姆勒维奥萨 </title>
+  <title> 新版markdown解析工具 // 羽加迪姆勒维奥萨 </title>
 </head>
 
 <body>
@@ -106,7 +106,7 @@
           
           
             
-              一个小demo
+              新版markdown解析工具
             
           
         </h1>
@@ -115,15 +115,15 @@
       <div class="post-meta">
           <span class="post-time">
             
-              发表于 2015-01-31
+              发表于 2015-03-29
             
           </span>
         
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/01/31/一个小demo/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/一个小demo/"></span>
+            <a href="/2015/03/29/新版markdown解析工具/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/29/新版markdown解析工具/"></span>
             </a>
           </span>
           
@@ -138,47 +138,10 @@
         
 
         
-          <p>假期闲来无事，看书之余突然想起来，总是登录教务网、点击、点击、查询成绩很是麻烦，于是想动手写一个小脚本。遂有此文。</p>
-<h1 id="简介">简介</h1><ul>
-<li>自动登录 ，使用python requests 包来实现；</li>
-<li>页面指定内容抓取， 使用BeautifulSoup 包实现；</li>
-<li>邮件发送 ，使用SMTP 和 email 包实现</li>
-</ul>
-<a id="more"></a>
-<h1 id="具体内容">具体内容</h1><h2 id="涉及到的import">涉及到的import</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests,re</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span>  types</span><br><span class="line"><span class="keyword">import</span>  smtplib</span><br><span class="line"><span class="keyword">from</span> email.mime.text <span class="keyword">import</span>  MIMEText</span><br><span class="line"><span class="keyword">import</span>  os</span><br></pre></td></tr></table></figure>
-<h2 id="auto_login">auto login</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">session = requests.session()</span><br><span class="line">user=input(<span class="string">"input your userName:"</span>)      		<span class="comment"># get user name from  console input</span></span><br><span class="line">password=input(<span class="string">"input your password:"</span>)			<span class="comment"># get user password from console input	</span></span><br><span class="line">p=session.post(<span class="string">"http://jwas3.nju.edu.cn:8080/jiaowu/login.do"</span>, &#123;<span class="string">'userName'</span>:user,<span class="string">"password"</span>: password&#125;)   <span class="comment"># This is the login website</span></span><br><span class="line">request_url = session.get(<span class="string">"http://jwas3.nju.edu.cn:8080/jiaowu/student/studentinfo/achievementinfo.do?method=searchTermList"</span>)  <span class="comment"># the web site we want to get the contents from</span></span><br><span class="line">request_text=request_url.text 		<span class="comment"># get web text</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>上面的代码很容易理解，建立一个session会话，首先进行post登录，之后get想要抓取内容的网页来获取内容，requests的使用可以查询其文档</li>
-</ul>
-<p>两个网址是如何得到的呢？</p>
-<ul>
-<li>首先我们打开要抓取的网页，发现它会自动转到一个需要登录的页面</li>
-<li>使用chrome NetWork进行跟踪，此时我们人工登录一次，会发现NetWork中会出现类似login命名的一个post方式请求的项，点击查询，会找到对应请求的Header和Form内容</li>
-<li>模拟上述进行requests即可</li>
-</ul>
-<h2 id="get_content_from_HTML_document">get content from HTML document</h2><h3 id="抓到对应的表格">抓到对应的表格</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">soup=<span class="function"><span class="title">BeautifulSoup</span><span class="params">(request_text)</span></span></span><br><span class="line">content_1=soup<span class="class">.body</span><span class="class">.find_all</span>(<span class="string">"tr"</span>,<span class="string">"TABLE_TR_01"</span>)</span><br><span class="line">content_2=soup<span class="class">.body</span><span class="class">.find_all</span>(<span class="string">"tr"</span>,<span class="string">"TABLE_TR_02"</span>)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>BeautifulSoup 的文档介绍十分简单易懂，可以直接照搬取到想要的内容，<a href="http://www.crummy.com/software/BeautifulSoup/bs4/doc/" target="_blank" rel="external">文档</a></li>
-</ul>
-<h2 id="一个obj类">一个obj类</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">obj</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n_z,n_e,t,c,g)</span>:</span></span><br><span class="line">        self.name_zh=n_z</span><br><span class="line">        self.name_en=n_e</span><br><span class="line">        self.type=t</span><br><span class="line">        self.credit=c</span><br><span class="line">        self.grade=g</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">display</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"name: "</span>+self.name_zh)</span><br><span class="line">        print(<span class="string">"name_en: "</span>+self.name_en)</span><br><span class="line">        print(<span class="string">"type: "</span>+self.type)</span><br><span class="line">        print(<span class="string">"credit: "</span>+self.credit)</span><br><span class="line">        print(<span class="string">"grade: "</span>+self.grade)</span><br><span class="line">        print(<span class="string">""</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getStr</span><span class="params">(self)</span>:</span></span><br><span class="line">        temp=<span class="string">"name: "</span>+self.name_zh+<span class="string">"\nname_en: "</span>+self.name_en+<span class="string">"\ntype: "</span>+self.type+<span class="string">"\ncredit: "</span>+self.credit+<span class="string">"\ngrade: "</span>+self.grade</span><br><span class="line">        temp+=<span class="string">"\n"</span></span><br><span class="line">        <span class="keyword">return</span> temp</span><br></pre></td></tr></table></figure>
-<pre><code>建立了一个obj类方便数据的传递和输出等，obj类的成员就是每个科目的中文名、英文名、科目类型、学分、成绩，<span class="attribute">display</span>用于调试中展示其内容，getStr返回一个输出字符串，用于我们发送邮件时使用
-</code></pre><h2 id="解析内容建立obj对象列表">解析内容建立obj对象列表</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">obj_list=[]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> content_1:</span><br><span class="line">    obj_list.append(parse(i))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> content_2:</span><br><span class="line">    obj_list.append(parse(i))</span><br><span class="line">result=<span class="string">""</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> obj_list:</span><br><span class="line">    <span class="comment">#print("order: "+str(j))</span></span><br><span class="line">    <span class="comment">#i.display()</span></span><br><span class="line">    result+=i.getStr()</span><br><span class="line">    result+=<span class="string">"\n"</span></span><br></pre></td></tr></table></figure>
-<p>接着我们从 content_1 和 content_2 的HTML文件中解析出obj对象的成员并加入到list当中</p>
-<p>下面是上面用到的parse函数</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(content)</span>:</span></span><br><span class="line">    name_zh=<span class="string">""</span>;name_en=<span class="string">""</span>;types=<span class="string">""</span>;study_grade=grade=<span class="number">0</span>;</span><br><span class="line">    pre_list=content.contents                     <span class="comment"># 取content的contents成员列表</span></span><br><span class="line">   <span class="comment"># print(pre_list)</span></span><br><span class="line">    name_zh=pre_list[<span class="number">5</span>].contents[<span class="number">0</span>]               <span class="comment"># 这里的下标5、7、9、11、13是从pre_list的内容中人工获得或者find来获得</span></span><br><span class="line">    name_en=pre_list[<span class="number">7</span>].contents[<span class="number">0</span>]</span><br><span class="line">    type_temp=pre_list[<span class="number">9</span>].contents[<span class="number">0</span>]</span><br><span class="line">    types=<span class="string">""</span>.join(type_temp.split())</span><br><span class="line">    study_grade=pre_list[<span class="number">11</span>].contents[<span class="number">0</span>]</span><br><span class="line">    grade=pre_list[<span class="number">13</span>].contents                   <span class="comment"># 这里没有直接取contents[0]的原因是有无成绩的情况下，这里的项数会有区分，所以单独在下面进行处理</span></span><br><span class="line">    <span class="keyword">if</span> len(grade)==<span class="number">1</span>:</span><br><span class="line">        grade=<span class="string">"无成绩"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        grade=grade[<span class="number">1</span>]</span><br><span class="line">        pattern=re.compile(<span class="string">r'\d+\.\d'</span>)</span><br><span class="line">        grade=pattern.findall(str(grade))[<span class="number">0</span>]</span><br><span class="line">    temp=obj(name_zh,name_en,types,study_grade,grade)   <span class="comment"># 返回处理好的obj对象</span></span><br><span class="line">   <span class="comment">#temp.display()</span></span><br><span class="line">    <span class="keyword">return</span> temp</span><br></pre></td></tr></table></figure>
-<h2 id="发送邮件">发送邮件</h2><h3 id="如何发送？">如何发送？</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sendEmail</span><span class="params">()</span>:</span></span><br><span class="line">    From=<span class="string">"xxxxxx@xx.com"</span></span><br><span class="line">    To=<span class="string">" xxxxxxxx@xx.com"</span></span><br><span class="line">    msg=MIMEText(result.encode(<span class="string">'utf-8'</span>),_charset=<span class="string">'UTF-8'</span>)</span><br><span class="line">    msg[<span class="string">'Subject'</span>]=<span class="string">"成绩有改动"</span></span><br><span class="line">    msg[<span class="string">'From'</span>]=From</span><br><span class="line">    msg[<span class="string">'To'</span>] = To</span><br><span class="line">    s=smtplib.SMTP(<span class="string">'smtp.xx.com'</span>,<span class="number">25</span>)</span><br><span class="line">    s.login(From,<span class="string">"From password"</span>)</span><br><span class="line">    s.sendmail(From,To,msg.as_string())</span><br><span class="line">    s.quit()</span><br></pre></td></tr></table></figure>
-<p>发送邮件的方法也见其文档说明,需要注意的是，计算机名需要是英文的，否则对应的库中的编码会出现问题</p>
-<h3 id="何时发送？">何时发送？</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">file=open(<span class="string">"copy_local.txt"</span>,<span class="string">"r+"</span>)</span><br><span class="line">result_old=<span class="string">""</span></span><br><span class="line"><span class="keyword">for</span> eachline <span class="keyword">in</span> file:</span><br><span class="line">    result_old+=eachline</span><br><span class="line">print(<span class="string">"old: "</span>+result_old)</span><br><span class="line"><span class="keyword">if</span> result_old!=result:</span><br><span class="line">    sendEmail()</span><br><span class="line">    file.seek(<span class="number">0</span>)</span><br><span class="line">    file.truncate()</span><br><span class="line">    file.write(result)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">"nothing has changed."</span>)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
-<ul>
-<li>本地建立一个拷贝，每次抓取后和本地副本进行对比，如果相同则不发送，如果不同，则发送邮件并更新本地副本。</li>
-<li>这里有很多可以优化的地方，比如并不需要比对全文，可以存储一个项数，这样只需要比较科目数即可，也不需要文件IO的时候将全文均读取</li>
-</ul>
-<h1 id="最后">最后</h1><ul>
-<li>如果没有服务器，这个只是一个demo，没有太大的使用价值，不过如果有服务器或者PC一直开机的话，可以设置上述抓取内容的部分定时进行运行，比如每1h运行一次，这样就可以很好的实现预期的功能了；（阿里云可以申请6个月的服务器，不过没有外网ip，只能从内网ip登陆）</li>
-<li>文档和google是我们的好伙伴，上述100行的python代码写的过程中遇到不少细节问题都通过搜索得到了解决；</li>
-<li>假期看书不容易专注的时候给自己定一些小任务来做，也是一种提高啦，而且做完之后更容易看的进去了。</li>
-<li>去刷EoPL了</li>
-</ul>
+          <h2 id="软件介绍">软件介绍</h2><h3 id="第一个demo">第一个demo</h3><p>之前还在博客园写博客的时候已经有过一篇介绍markdown解析器的[博文](<a href="http://www.cnblogs.com/gaoduan/p/4127875.html" target="_blank" rel="external">http://www.cnblogs.com/gaoduan/p/4127875.html</a>)<br>然而上面的版本实际上有一个致命的错误，就是解析策略是错误的，一开始使用split将字符串分割之后丢失了很多信息，因此实际上是不可取的。</p>
+<h3 id="第二个demo">第二个demo</h3><a id="more"></a>
+<p>吸取上面的教训之后，又加上想做个实时预览的GUI界面，因此改用更加熟悉的C++来做，这样方便使用Qt来做GUI。参见[C++版](<a href="http://www.cnblogs.com/gaoduan/p/4160689.html" target="_blank" rel="external">http://www.cnblogs.com/gaoduan/p/4160689.html</a>)</p>
+<p>这个版本没有显著的策略错误，实现细节的关键在于搞清楚</p>
 
         
       </div>
@@ -200,13 +163,11 @@
           <div class="post-nav">
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/2015/03/16/Y组合子/">Y组合子</a>
-              
             </div>
 
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2015/01/31/走马观花的高效学习方法/">走马观花的高效学习方法</a>
+                <a href="/2015/03/22/几个有趣的小例子/">几个有趣的小例子</a>
               
             </div>
           </div>
@@ -223,8 +184,8 @@
   
     <div class="comments" id="comments">
       
-        <div class="ds-thread" data-thread-key="2015/01/31/一个小demo/"
-             data-title="一个小demo" data-url="https://duangao.github.io/2015/01/31/一个小demo/">
+        <div class="ds-thread" data-thread-key="2015/03/29/新版markdown解析工具/"
+             data-title="新版markdown解析工具" data-url="https://duangao.github.io/2015/03/29/新版markdown解析工具/">
         </div>
 
       
@@ -304,7 +265,7 @@
 
     
       <div class="post-toc sidebar-panel-active">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#具体内容"><span class="nav-number">2.</span> <span class="nav-text">具体内容</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#涉及到的import"><span class="nav-number">2.1.</span> <span class="nav-text">涉及到的import</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#auto_login"><span class="nav-number">2.2.</span> <span class="nav-text">auto login</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get_content_from_HTML_document"><span class="nav-number">2.3.</span> <span class="nav-text">get content from HTML document</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抓到对应的表格"><span class="nav-number">2.3.1.</span> <span class="nav-text">抓到对应的表格</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个obj类"><span class="nav-number">2.4.</span> <span class="nav-text">一个obj类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解析内容建立obj对象列表"><span class="nav-number">2.5.</span> <span class="nav-text">解析内容建立obj对象列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送邮件"><span class="nav-number">2.6.</span> <span class="nav-text">发送邮件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何发送？"><span class="nav-number">2.6.1.</span> <span class="nav-text">如何发送？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#何时发送？"><span class="nav-number">2.6.2.</span> <span class="nav-text">何时发送？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">3.</span> <span class="nav-text">最后</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件介绍"><span class="nav-number">1.</span> <span class="nav-text">软件介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一个demo"><span class="nav-number">1.1.</span> <span class="nav-text">第一个demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二个demo"><span class="nav-number">1.2.</span> <span class="nav-text">第二个demo</span></a></li></ol></li></ol>
       </div>
     
   </div>

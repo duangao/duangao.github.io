@@ -1,0 +1,844 @@
+<!doctype html>
+<html class="theme-next use-motion">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.3.0rc5"/>
+
+
+    <meta name="description" content="Programmer's personal blog" />
+
+
+
+
+
+    <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.3.0rc5" />
+
+
+
+
+  <title> 递归下降求解中缀、后缀、前缀表达式 // 羽加迪姆勒维奥萨 </title>
+</head>
+
+<body>
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+    <a href="/" class="brand">
+        <span class="logo">
+          <i class="icon-logo"></i>
+        </span>
+        <span class="site-title">羽加迪姆勒维奥萨</span>
+    </a>
+</h1>
+
+
+  <ul id="menu" class="menu">
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首页
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          归档
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-tags">
+        <a href="/tags">
+          <i class="menu-item-icon icon-tags"></i> <br />
+          标签
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          关于
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+            
+          
+
+          <div id="posts" class="posts-expand">
+            
+  
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              递归下降求解中缀、后缀、前缀表达式
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+          <span class="post-time">
+            
+              发表于 2014-09-15
+            
+          </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/15/递归下降求解中缀、后缀、前缀表达式/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/15/递归下降求解中缀、后缀、前缀表达式/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          <p>最后一次更新，前面C++ 实现的版本已经很好的解释了递归下降的做法和威力，这里给一个scheme 的代码（前缀表达式的解析），利用递归的方法直接解决，代码中用到了racket 的正则表达式，可以去官网上查看非常丰富的相关文档内容。</p>
+<a id="more"></a>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#lang racket&#10;&#10;(display &#34;this is a simple calulater,please input S-expression:\neg. operator num1 num2\noprator can use :&#10;+ - * / ** %&#34;)&#10;(define (power base n)&#10;  (if (= n 0)1&#10;      (* base (power base (- n 1)))))&#10;&#10;(define calulate &#10;&#10;  (lambda (exp)&#10;           (match exp&#10;             [(? number? x) x]&#10;             [`(, op , e1 , e2)&#10;              (&#10;               let(&#10;                   (v1 (calulate e1))&#10;                   (v2 (calulate e2))&#10;                   )&#10;                (match op&#10;                (&#39;+ (+ v1 v2))&#10;                (&#39;- (- v1 v2))&#10;                (&#39;* (* v1 v2))&#10;                (&#39;/ (/ v1 v2))&#10;                (&#39;** (power v1 v2))&#10;                (&#39;% (remainder v1 v2))  &#10;             ))]&#10;             ) ))</span><br></pre></td></tr></table></figure>
+<hr>
+<p>再进行一次更有意思的扩充，上次解决了+ - * / 和括号等，那么再加一些操作符怎么办呢？比如再加&gt;= &gt; &lt; &lt;= == != &amp;&amp; || ! ~ &amp;等等（这些操作符不是传统的算术运算，但是他们确实返回值是数，可以极好的当作之前文法定义的一个练习）</p>
+<ul>
+<li>首先，优先级大概像下面这个：从上到下优先级越来越高</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">digit</span><br><span class="line">&amp;&amp; || </span><br><span class="line"><span class="xml"><span class="tag">&lt; &lt;= =<span class="value">=</span> != &gt;</span></span> &gt;=</span><br><span class="line"><span class="bullet">+ </span>- </span><br><span class="line"><span class="bullet">* </span>/ %</span><br><span class="line"><span class="bullet">* </span>&amp; | ~ </span><br><span class="line"> ( )</span><br></pre></td></tr></table></figure>
+<p>因此，扩充的语法定义：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="setting">digti=<span class="value">[<span class="number">0</span>-<span class="number">9</span>]+ </span></span></span><br><span class="line"><span class="setting">fact1=<span class="value">digit | <span class="string">"("</span> exp3 <span class="string">")"</span> </span></span></span><br><span class="line"><span class="setting">fact2=<span class="value">(！|~)fact1    </span></span></span><br><span class="line"><span class="setting">term = <span class="value">fact2 ( ( <span class="string">"*"</span> | <span class="string">"/"</span> ) fact2) *  </span></span></span><br><span class="line"><span class="setting">exp = <span class="value">term ( ( <span class="string">"+"</span> | <span class="string">"-"</span> ) term) * </span></span></span><br><span class="line"><span class="setting">exp2=<span class="value">exp ((&lt;=|&gt;=|&lt;|&gt;|==|!=) exp)* </span></span></span><br><span class="line"><span class="setting">exp3=<span class="value">exp2 ((&amp;&amp;| || ) exp2)*</span></span></span><br></pre></td></tr></table></figure>
+<p>最后得到的结果就是exp3的result成员。</p>
+<p>关于上面扩充的文法的实现如果理解了以前的内容，就非常简单了。</p>
+<hr>
+<p>修改：getNumber中添加一个简单的bool判断就可以扩充到负数的数值域中。</p>
+<hr>
+<ul>
+<li>学习数据结构的时候学到栈的时候都会学习使用栈来实现求解中缀表达式，思路就是扫描一遍，数字输出，符号根据优先级决定入栈和出栈的时间，然后生成后缀表达式，对后缀表达式的求解是容易的，直接扫描一遍，遇到数字入栈，遇到操作符就直接取栈顶的两个元素做运算。</li>
+<li><p>好久之前实现上面所说的程序是第一个感受“编译”的感觉，感觉很爽，因此一直想学一下真正的编译原理，龙书比较深奥，一直未得其奥义。这两天阅读了vczh大大的系列文章 《手写语法分析器》、《正则表达式引擎》等文章，颇有感触，遂有此文。</p>
+</li>
+<li><p>表达式比定义语言要容易的多，因为它可以把词法分析和语法分析很容易的结合起来，因为表达式中除了数字其它的符号均是单字符，直接判断就可以知道token类型，比较简单。</p>
+</li>
+<li>递归下降的核心在于写出无左递归的语法，写出来之后就直接写个程序去解释这个正则表达式就可以容易的搞定。</li>
+</ul>
+<h3 id="下面简单介绍一下前缀或者后缀表达式的递归下降分析：">下面简单介绍一下前缀或者后缀表达式的递归下降分析：</h3><ul>
+<li><p>对于前缀，scheme中的表达式都采取这样的形式，这样的形式就无需词法分析了，没有优先级的歧义。</p>
+</li>
+<li><p>语法定义如下：</p>
+<figure class="highlight tcl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">expr</span>=<span class="string">"("</span> op number number <span class="string">")"</span> | <span class="string">"（"</span> <span class="keyword">expr</span> <span class="string">"）"</span> |number</span><br><span class="line">        number= [<span class="number">0</span>-<span class="number">9</span>]*</span><br><span class="line">        op=<span class="string">'+'</span> | <span class="string">'-'</span> | <span class="string">'* | '</span>/<span class="string">'</span><br><span class="line">我们之间对每个部分进行翻译即可；</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>比如对于number<br>getnumber函数应该这么写：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">expr <span class="title">GetNumber</span><span class="params">(<span class="keyword">char</span>* &amp;stream)</span> </span><br><span class="line"></span><br><span class="line"></span>&#123; </span><br><span class="line"></span><br><span class="line">   expr number; <span class="comment">//存储结果，为一个expr类对象 </span></span><br><span class="line"></span><br><span class="line">   <span class="keyword">char</span>* lookup = stream; </span><br><span class="line"> </span><br><span class="line">   <span class="keyword">while</span> ((*lookup) == <span class="string">' '</span>) lookup++; </span><br><span class="line">   </span><br><span class="line">   <span class="keyword">bool</span> flag = <span class="keyword">false</span>; </span><br><span class="line">　　<span class="keyword">bool</span> symbol=<span class="keyword">false</span>；</span><br><span class="line">　　<span class="keyword">if</span>（*lookup == <span class="string">'-'</span>)</span><br><span class="line">　　　　symbol=<span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (<span class="keyword">true</span>) </span><br><span class="line"></span><br><span class="line"> &#123; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((*lookup )&lt;= <span class="string">'9'</span> &amp;&amp; (*lookup) &gt;= <span class="string">'0'</span>) </span><br><span class="line"></span><br><span class="line">   &#123; </span><br><span class="line"></span><br><span class="line">       number.result = number.result * <span class="number">10</span> + (*lookup) - <span class="string">'0'</span>; </span><br><span class="line"></span><br><span class="line">       ++lookup; </span><br><span class="line"></span><br><span class="line">       flag = <span class="keyword">true</span>; </span><br><span class="line"></span><br><span class="line">   &#125; </span><br><span class="line"></span><br><span class="line">   <span class="keyword">else</span> </span><br><span class="line"></span><br><span class="line">      <span class="keyword">break</span>; </span><br><span class="line"></span><br><span class="line"> &#125; </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (flag) <span class="comment">//获得当前开头的数字，并将当前指针所指调整到数字后面一位 </span></span><br><span class="line"></span><br><span class="line">  stream = lookup; </span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span> <span class="comment">//当前开头开始的不是数字，当前指针不变 </span></span><br><span class="line"></span><br><span class="line">&#123; </span><br><span class="line"></span><br><span class="line">  number.error = <span class="string">"there need a number!\n"</span>; </span><br><span class="line"> </span><br><span class="line">  number.error_position = lookup; </span><br><span class="line"></span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">if</span>(symbol)</span><br><span class="line">　　number.result=-number.result;</span><br><span class="line"><span class="keyword">return</span> number; </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有了getnumber之后getexpression就很容易了，核心部分如下：</p>
+<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">expr</span> expression;</span><br><span class="line">    <span class="type">char</span> *lookup = stream;</span><br><span class="line">    expression = <span class="type">GetNumber</span>(lookup);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (expression.error)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="type">Is</span>(lookup, <span class="string">"("</span>))</span><br><span class="line">        &#123;    </span><br><span class="line">            expression.error = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">            <span class="type">char</span> op = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">if</span> (op=<span class="type">IsOperator</span>(lookup))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="type">expr</span> left_expr = <span class="type">Getexpression</span>(lookup);</span><br><span class="line">                <span class="keyword">if</span> (left_expr.error)</span><br><span class="line">                    <span class="keyword">return</span> left_expr;</span><br><span class="line"></span><br><span class="line">                <span class="type">char</span> *copy_lookup = lookup;</span><br><span class="line">                </span><br><span class="line">                <span class="type">expr</span> right_expr = <span class="type">Getexpression</span>(lookup);</span><br><span class="line">                <span class="keyword">if</span> (right_expr.error )</span><br><span class="line">                    <span class="keyword">return</span> right_expr;</span><br><span class="line"></span><br><span class="line">                switch (op)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">case</span> '+':</span><br><span class="line">                        expression.<span class="literal">result</span> = left_expr.<span class="literal">result</span> + right_expr.<span class="literal">result</span>; <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> '-':</span><br><span class="line">                        expression.<span class="literal">result</span> = left_expr.<span class="literal">result</span> - right_expr.<span class="literal">result</span>; <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> '*':</span><br><span class="line">                        expression.<span class="literal">result</span> = left_expr.<span class="literal">result</span> * right_expr.<span class="literal">result</span>; <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> '/':</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">if</span> (right_expr.<span class="literal">result</span> == <span class="number">0</span>)</span><br><span class="line">                        &#123;</span><br><span class="line">                            expression.error = <span class="string">"the number divided can not be zero!\n"</span>;</span><br><span class="line">                            expression.error_position = copy_lookup; <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">else</span></span><br><span class="line">                        &#123;</span><br><span class="line">                            expression.<span class="literal">result</span> = left_expr.<span class="literal">result</span> / right_expr.<span class="literal">result</span>; <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    default:</span><br><span class="line">                    &#123;</span><br><span class="line">                        expression.error = <span class="string">"the wrong operator!\n"</span>;</span><br><span class="line">                        expression.error_position = lookup;</span><br><span class="line">                        <span class="keyword">return</span> expression;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                expression= <span class="type">Getexpression</span>(lookup);</span><br><span class="line">                <span class="keyword">if</span> (expression.error != <span class="number">0</span>) <span class="keyword">return</span> expression;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!<span class="type">Is</span>(lookup, <span class="string">")"</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                expression.error = <span class="string">"there need right bracket!\n"</span>;</span><br><span class="line">                expression.error_position = lookup;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(expression.error==<span class="number">0</span>)                     //成功获得了数字，因此将stream指针置于数字后面</span><br><span class="line">    &#123;</span><br><span class="line">        stream = lookup;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> expression;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>中缀的代码就得自己写啦，我也是参考vczh大大的前缀代码写了一份前缀之后，自己写了一份中缀，我们很容易从中得到启示，找到递归下降的核心所在，据此可以写出中缀表达式的求解（中缀的求解代码完全是我自己写的，错误处理部分可能存在一些漏洞），相信根据上文自己写一个中缀一定有很多收获。</li>
+</ul>
+
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+
+        
+          <div class="post-nav">
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2014/10/25/BufferLab/">BufferLab</a>
+              
+            </div>
+
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2014/08/21/android手机屏幕解锁的种类数/">android手机屏幕解锁的种类数</a>
+              
+            </div>
+          </div>
+        
+
+        
+        
+      </div>
+    
+  </div>
+
+
+
+  
+    <div class="comments" id="comments">
+      
+        <div class="ds-thread" data-thread-key="2014/09/15/递归下降求解中缀、后缀、前缀表达式/"
+             data-title="递归下降求解中缀、后缀、前缀表达式" data-url="https://duangao.github.io/2014/09/15/递归下降求解中缀、后缀、前缀表达式/">
+        </div>
+
+      
+    </div>
+  
+
+          </div>
+
+          
+        </div>
+
+        
+<div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+    
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" data-target="site-overview">
+          站点概览
+        </li>
+      </ul>
+    
+
+    <div class="site-overview">
+      <div class="site-author motion-element">
+        <img class="site-author-image" src="/images/default_avatar.jpg" alt="Duangao" />
+        <p class="site-author-name">Duangao</p>
+      </div>
+      <p class="site-description motion-element">Programmer's personal blog</p>
+      <div class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <span class="site-state-item-count">6</span>
+            <span class="site-state-item-name">标签</span>
+        </div>
+        <div class="site-state-item site-state-pages">
+            <span class="site-state-item-count">2</span>
+            <span class="site-state-item-name">页面</span>
+        </div>
+      </div>
+
+      
+
+      <div class="social-info motion-element">
+        
+          
+            <span class="social-item">
+              <a href="https://github.com/duangao">github</a>
+            </span>
+          
+            <span class="social-item">
+              <a href="http://weibo.com/duangao">weibo</a>
+            </span>
+          
+            <span class="social-item">
+              <a href="http://www.zhihu.com/people/gao-duan-80">zhihu</a>
+            </span>
+          
+        
+      </div>
+
+    </div>
+
+    
+      <div class="post-toc sidebar-panel-active">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#下面简单介绍一下前缀或者后缀表达式的递归下降分析："><span class="nav-number">1.</span> <span class="nav-text">下面简单介绍一下前缀或者后缀表达式的递归下降分析：</span></a></li></ol>
+      </div>
+    
+  </div>
+</div>
+
+
+      </div>
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp; 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">Duangao</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 - <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT</a>
+</div>
+
+
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $(".fancybox").fancybox();
+    });
+  </script>
+
+  <script type="text/javascript">
+  function hasMobileUA () {
+    var nav = window.navigator;
+    var ua = nav.userAgent;
+    var pa = /iPad|iPhone|Android|Opera Mini|BlackBerry|webOS|UCWEB|Blazer|PSP|IEMobile|Symbian/g;
+
+    return pa.test(ua);
+  }
+
+  function isDesktop () {
+    return screen.width > 991 && !hasMobileUA();
+  }
+
+  function isTablet () {
+    return screen.width < 992 && screen.width > 767 && hasMobileUA();
+  }
+
+  function isMobile () {
+    return screen.width < 767 && hasMobileUA();
+  }
+
+  function escapeSelector (selector) {
+    return selector.replace(/[!"$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&")
+  }
+</script>
+
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  
+
+  <script type="text/javascript" id="motion.global">
+  $(document).ready(function () {
+    var body = $('body');
+    var isSidebarVisible = false;
+    var sidebarToggle = $('.sidebar-toggle');
+    var sidebarToggleLine1st = $('.sidebar-toggle-line-first')
+    var sidebarToggleLine2nd = $('.sidebar-toggle-line-middle');
+    var sidebarToggleLine3rd = $('.sidebar-toggle-line-last');
+    var sidebar = $('.sidebar');
+
+    var SIDEBAR_WIDTH = '320px';
+    var SIDEBAR_DISPLAY_DURATION = 300;
+
+    var sidebarToogleLineStatusInit = {width: '100%', opacity: 1, left: 0, rotateZ: 0, top: 0};
+
+    var sidebarToggleLine1stStatusInit = sidebarToogleLineStatusInit;
+    var sidebarToggleLine1stStatusArrow = {width: '50%', rotateZ: '-45deg', top: '2px'};
+    var sidebarToogleLine1stStatusClose = {width: '100%', rotateZ: '-45deg', top: '5px'};
+
+    var sidebarToggleLine2ndStatusInit = sidebarToogleLineStatusInit;
+    var sidebarToggleLine2ndStatusArrow = {width: '90%'};
+    var sidebarToogleLine2ndStatusClose = {opacity: 0};
+
+    var sidebarToggleLine3rdStatusInit = sidebarToogleLineStatusInit;
+    var sidebarToggleLine3rdStatusArrow = {width: '50%', rotateZ: '45deg', top: '-2px'};
+    var sidebarToogleLine3rdStatusClose = {width: '100%', rotateZ: '45deg', top: '-5px'};
+
+    sidebatToggleMotion();
+    postsListMotion();
+    backToTopMotion();
+
+
+    $(document)
+      .on('sidebar.isShowing', function () {
+        isDesktop() && body.velocity(
+          {paddingRight: SIDEBAR_WIDTH},
+          SIDEBAR_DISPLAY_DURATION
+        );
+        sidebarContentMotion();
+      })
+      .on('sidebar.isHiding', function () {});
+
+
+    function backToTopMotion () {
+      var b2top = $('.back-to-top');
+      b2top.on('click', function () {
+        body.velocity('scroll');
+      });
+    }
+
+    function sidebarShowMotion () {
+
+      sidebarToggleLine1st.velocity(sidebarToogleLine1stStatusClose);
+      sidebarToggleLine2nd.velocity(sidebarToogleLine2ndStatusClose);
+      sidebarToggleLine3rd.velocity(sidebarToogleLine3rdStatusClose);
+
+      sidebar.velocity({width: SIDEBAR_WIDTH}, {
+        duration: SIDEBAR_DISPLAY_DURATION,
+        complete: function () {
+          sidebar.addClass('sidebar-active');
+          sidebar.trigger('sidebar.didShow');
+        }
+      });
+      sidebar.trigger('sidebar.isShowing');
+    }
+
+    function sidebarHideMotion () {
+      isDesktop() && body.velocity({paddingRight: 0});
+      sidebar.velocity('reverse');
+
+      sidebarToggleLine1st.velocity(sidebarToggleLine1stStatusInit);
+      sidebarToggleLine2nd.velocity(sidebarToggleLine2ndStatusInit);
+      sidebarToggleLine3rd.velocity(sidebarToggleLine3rdStatusInit);
+
+      sidebar.removeClass('sidebar-active');
+      sidebar.trigger('sidebar.isHiding');
+    };
+
+    function sidebarContentMotion () {
+      $('.sidebar .motion-element').velocity(
+        'transition.slideRightIn',
+        {stagger: 50, drag: true}
+      );
+    }
+
+    function postsListMotion () {
+      $('.post').velocity('transition.slideDownIn', {stagger: 300, drag: true});
+    }
+
+    function sidebatToggleMotion () {
+      sidebarToggle.on('click', function () {
+        isSidebarVisible ? sidebarHideMotion() : sidebarShowMotion();
+        isSidebarVisible = !isSidebarVisible;
+      });
+
+      sidebarToggle.hover(function () {
+        if (isSidebarVisible) {return}
+        sidebarToggleLine1st.velocity('stop').velocity(sidebarToggleLine1stStatusArrow);
+        sidebarToggleLine2nd.velocity('stop').velocity(sidebarToggleLine2ndStatusArrow);
+        sidebarToggleLine3rd.velocity('stop').velocity(sidebarToggleLine3rdStatusArrow);
+      }, function () {
+        if (isSidebarVisible) {return}
+        sidebarToggleLine1st.velocity('stop').velocity(sidebarToggleLine1stStatusInit);
+        sidebarToggleLine2nd.velocity('stop').velocity(sidebarToggleLine2ndStatusInit);
+        sidebarToggleLine3rd.velocity('stop').velocity(sidebarToggleLine3rdStatusInit);
+      });
+    }
+  });
+
+</script>
+
+
+
+
+
+  
+  
+<script type="text/javascript" id="bootstrap.scrollspy.custom">
+  /* ========================================================================
+  * Bootstrap: scrollspy.js v3.3.2
+  * http://getbootstrap.com/javascript/#scrollspy
+  * ========================================================================
+  * Copyright 2011-2015 Twitter, Inc.
+  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+  * ======================================================================== */
+
+  /**
+   * Custom by iissnan
+   *
+   * - Add a `clear.bs.scrollspy` event.
+   * - Esacpe targets selector.
+   */
+
+
+  +function ($) {
+    'use strict';
+
+    // SCROLLSPY CLASS DEFINITION
+    // ==========================
+
+    function ScrollSpy(element, options) {
+      this.$body          = $(document.body)
+      this.$scrollElement = $(element).is(document.body) ? $(window) : $(element)
+      this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
+      this.selector       = (this.options.target || '') + ' .nav li > a'
+      this.offsets        = []
+      this.targets        = []
+      this.activeTarget   = null
+      this.scrollHeight   = 0
+
+      this.$scrollElement.on('scroll.bs.scrollspy', $.proxy(this.process, this))
+      this.refresh()
+      this.process()
+    }
+
+    ScrollSpy.VERSION  = '3.3.2'
+
+    ScrollSpy.DEFAULTS = {
+      offset: 10
+    }
+
+    ScrollSpy.prototype.getScrollHeight = function () {
+      return this.$scrollElement[0].scrollHeight || Math.max(this.$body[0].scrollHeight, document.documentElement.scrollHeight)
+    }
+
+    ScrollSpy.prototype.refresh = function () {
+      var that          = this
+      var offsetMethod  = 'offset'
+      var offsetBase    = 0
+
+      this.offsets      = []
+      this.targets      = []
+      this.scrollHeight = this.getScrollHeight()
+
+      if (!$.isWindow(this.$scrollElement[0])) {
+        offsetMethod = 'position'
+        offsetBase   = this.$scrollElement.scrollTop()
+      }
+
+      this.$body
+        .find(this.selector)
+        .map(function () {
+          var $el   = $(this)
+          var href  = $el.data('target') || $el.attr('href')
+          var $href = /^#./.test(href) && $(escapeSelector(href)) // Need to escape selector.
+
+          return ($href
+            && $href.length
+            && $href.is(':visible')
+            && [[$href[offsetMethod]().top + offsetBase, href]]) || null
+        })
+        .sort(function (a, b) { return a[0] - b[0] })
+        .each(function () {
+          that.offsets.push(this[0])
+          that.targets.push(this[1])
+        })
+
+
+    }
+
+    ScrollSpy.prototype.process = function () {
+      var scrollTop    = this.$scrollElement.scrollTop() + this.options.offset
+      var scrollHeight = this.getScrollHeight()
+      var maxScroll    = this.options.offset + scrollHeight - this.$scrollElement.height()
+      var offsets      = this.offsets
+      var targets      = this.targets
+      var activeTarget = this.activeTarget
+      var i
+
+      if (this.scrollHeight != scrollHeight) {
+        this.refresh()
+      }
+
+      if (scrollTop >= maxScroll) {
+        return activeTarget != (i = targets[targets.length - 1]) && this.activate(i)
+      }
+
+      if (activeTarget && scrollTop < offsets[0]) {
+        $(this.selector).trigger('clear.bs.scrollspy')  // Add a custom event.
+        this.activeTarget = null
+        return this.clear()
+      }
+
+      for (i = offsets.length; i--;) {
+        activeTarget != targets[i]
+          && scrollTop >= offsets[i]
+          && (!offsets[i + 1] || scrollTop <= offsets[i + 1])
+          && this.activate(targets[i])
+      }
+    }
+
+    ScrollSpy.prototype.activate = function (target) {
+      this.activeTarget = target
+
+      this.clear()
+
+      var selector = this.selector +
+        '[data-target="' + target + '"],' +
+        this.selector + '[href="' + target + '"]'
+
+      var active = $(selector)
+        .parents('li')
+        .addClass('active')
+
+      if (active.parent('.dropdown-menu').length) {
+        active = active
+          .closest('li.dropdown')
+          .addClass('active')
+      }
+
+      active.trigger('activate.bs.scrollspy')
+    }
+
+    ScrollSpy.prototype.clear = function () {
+      $(this.selector)
+        .parentsUntil(this.options.target, '.active')
+        .removeClass('active')
+    }
+
+
+    // SCROLLSPY PLUGIN DEFINITION
+    // ===========================
+
+    function Plugin(option) {
+      return this.each(function () {
+        var $this   = $(this)
+        var data    = $this.data('bs.scrollspy')
+        var options = typeof option == 'object' && option
+
+        if (!data) $this.data('bs.scrollspy', (data = new ScrollSpy(this, options)))
+        if (typeof option == 'string') data[option]()
+      })
+    }
+
+    var old = $.fn.scrollspy
+
+    $.fn.scrollspy             = Plugin
+    $.fn.scrollspy.Constructor = ScrollSpy
+
+
+    // SCROLLSPY NO CONFLICT
+    // =====================
+
+    $.fn.scrollspy.noConflict = function () {
+      $.fn.scrollspy = old
+      return this
+    }
+
+
+    // SCROLLSPY DATA-API
+    // ==================
+
+    $(window).on('load.bs.scrollspy.data-api', function () {
+      $('[data-spy="scroll"]').each(function () {
+        var $spy = $(this)
+        Plugin.call($spy, $spy.data())
+      })
+    })
+
+  }(jQuery);
+</script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      $tocSelector.scrollPager({
+        max: getTOCMaxHeight()
+      });
+    }
+
+    function getTOCMaxHeight () {
+      // TODO: Make it beautiful
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+        parseInt($sidebarInner.css('padding-top'), 10) -
+        parseInt($sidebarInner.css('padding-bottom'), 10) -
+        $('.sidebar-nav').height() -
+        parseInt($tocSelector.css('margin-top'), 10) -
+        parseInt($tocSelector.css('margin-bottom'), 10);
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+      });
+    }
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      if ($('.post-toc').html().trim().length > 0 && isDesktop()) {
+        setTimeout(function () {
+          $('.sidebar-toggle').trigger('click');
+        }, 800);
+      }
+    });
+  </script>
+
+
+
+
+  
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"duangao"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+  
+</body>
+</html>
