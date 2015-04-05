@@ -141,7 +141,48 @@
           <h2 id="软件介绍">软件介绍</h2><h3 id="第一个demo">第一个demo</h3><p>之前还在博客园写博客的时候已经有过一篇介绍markdown解析器的[博文](<a href="http://www.cnblogs.com/gaoduan/p/4127875.html" target="_blank" rel="external">http://www.cnblogs.com/gaoduan/p/4127875.html</a>)<br>然而上面的版本实际上有一个致命的错误，就是解析策略是错误的，一开始使用split将字符串分割之后丢失了很多信息，因此实际上是不可取的。</p>
 <h3 id="第二个demo">第二个demo</h3><a id="more"></a>
 <p>吸取上面的教训之后，又加上想做个实时预览的GUI界面，因此改用更加熟悉的C++来做，这样方便使用Qt来做GUI。参见[C++版](<a href="http://www.cnblogs.com/gaoduan/p/4160689.html" target="_blank" rel="external">http://www.cnblogs.com/gaoduan/p/4160689.html</a>)</p>
-<p>这个版本没有显著的策略错误，实现细节的关键在于搞清楚</p>
+<p>这个版本没有显著的策略错误，实现细节的关键在于搞清楚各种语法的不同层次或者说是作用范围，比如粗体 斜体 删除线是词法阶段的，基本不涉及上下文语义，而像6级标题 无序列表等也基本上很好处理，判断一下行首的字符即可。</p>
+<p>GUI 的部分是采用Qt 的webkitView 插件完成预览，同步滚动做的很粗糙，只是算了一下比例，更精确的滚动我想可以通过统计生成的文档HTML的行数，以及事先统计好的各种标签的宽度来综合计算。</p>
+<h2 id="本次新版的特性">本次新版的特性</h2><h3 id="采用Python_开发的命令行解析工具">采用Python 开发的命令行解析工具</h3><ul>
+<li>对C++的regex和字符串处理实在是不能忍了，于是换回Python；</li>
+<li>GUI 随便做做就好了，用起来我发现也不会真的对着那个打的，毕竟更重要的一个语法高亮的编辑器，Linux vim就可以很好的完成任务，配合一个命令行一键导出的工具，这个版本成为唯一一个让我抛弃其它markdown编辑器和生成器的实用工具，推荐大家使用后提出意见和建议~</li>
+</ul>
+<h3 id="代码短小">代码短小</h3><ul>
+<li>加上命令行参数处理以及更丰富的markdown功能支持也仅有300行代码(含注释)</li>
+<li>结合前两次开发的经验，正确的搞清楚了各种处理的方法、时机和技巧，具体内容下面讲解和说明。</li>
+</ul>
+<h3 id="方便安装和使用">方便安装和使用</h3><ul>
+<li>Linux环境下只要安装有Python3就可以直接使用它来导出HTML了，可以借助chrome来完成PDF打印，也可以安装依赖中的wtkhtmltopdf工具来一键生成。</li>
+<li>联网的环境下可以通过mathjax来自动完成数学公式的渲染</li>
+</ul>
+<blockquote>
+<p> 更多使用详情和安装说明见github首页的[README](<a href="https://github.com/duangao/Markdown" target="_blank" rel="external">https://github.com/duangao/Markdown</a>)</p>
+</blockquote>
+<h2 id="开发细节详解">开发细节详解</h2><h3 id="源码阅读方法">源码阅读方法</h3><ul>
+<li>忽略main函数，main函数中主要是用来处理命令行参数，真正起作用的是其中的run函数；</li>
+<li>run函数的参数是源文件(markdown)以及输出的HTML PDF文件名，暂时只需要关心HTML文件的输出即可；</li>
+<li><p>run的核心代码是for eachline in f循环中的parse函数，parse函数接收文本中每一行输入，输出对应的HTML语句写入输出文件中；</p>
+<blockquote>
+<p>注意，markdown的语法并不都是以行为单位的，比如block codeblock order—list  table 等是上下文相关的结构，因此会有特殊的处理</p>
+</blockquote>
+</li>
+<li><p>接下来就是阅读parse函数，下面的说明也主要针对parse函数进行</p>
+</li>
+</ul>
+<h3 id="具体转换的parse()函数">具体转换的parse()函数</h3><ul>
+<li><p>parse 函数进来首先进行test_state，我们暂时跳过这一步，只需要知道这一步进行和block codeblock table orderlist等上下文相关语法的处理即可；</p>
+</li>
+<li><p>title 处理：<br>  如果开头6个以内都是#则这一行被解释成为标题，根据#个数不同而设定为不同的header级别；</p>
+</li>
+<li>horizen line<br>  这个没什么好解释的，判断某一行是3个以上的 - 符号即可，唯一需要注意的是这个的处理要放在无序列表的处理之前，处理后直接返回，否则会被当作无序列表</li>
+<li>无序列表：<br>  判断开头是否是+ * -即可，处理也很简单</li>
+<li>行内引用<br>  本来是十分简单的，但要注意这个是可以嵌套的，因此内部需要使用循环实现，通过计数有多少个&gt;来添加对应数目的block头部</li>
+<li>tokenhandle<br>  tokenHandle的位置不可太靠前，因为一些语法当中是不应用这些修改的，实现的话这里使用正则表达式finditer 找到符合条件的全部字符串并进行替换处理，注意可以相互嵌套，因此替换的时候还需要根据原长和替换后的字符串长度进行一个运算；</li>
+<li>link_image<br>  链接、图片、上标、下标也是利用正则表达式来实现替换。</li>
+</ul>
+<h3 id="不是行独立的几种结构的处理方法——状态机">不是行独立的几种结构的处理方法——状态机</h3><blockquote>
+<p>待续</p>
+</blockquote>
 
         
       </div>
@@ -265,7 +306,7 @@
 
     
       <div class="post-toc sidebar-panel-active">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件介绍"><span class="nav-number">1.</span> <span class="nav-text">软件介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一个demo"><span class="nav-number">1.1.</span> <span class="nav-text">第一个demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二个demo"><span class="nav-number">1.2.</span> <span class="nav-text">第二个demo</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件介绍"><span class="nav-number">1.</span> <span class="nav-text">软件介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一个demo"><span class="nav-number">1.1.</span> <span class="nav-text">第一个demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二个demo"><span class="nav-number">1.2.</span> <span class="nav-text">第二个demo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本次新版的特性"><span class="nav-number">2.</span> <span class="nav-text">本次新版的特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#采用Python_开发的命令行解析工具"><span class="nav-number">2.1.</span> <span class="nav-text">采用Python 开发的命令行解析工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码短小"><span class="nav-number">2.2.</span> <span class="nav-text">代码短小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方便安装和使用"><span class="nav-number">2.3.</span> <span class="nav-text">方便安装和使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发细节详解"><span class="nav-number">3.</span> <span class="nav-text">开发细节详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#源码阅读方法"><span class="nav-number">3.1.</span> <span class="nav-text">源码阅读方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体转换的parse()函数"><span class="nav-number">3.2.</span> <span class="nav-text">具体转换的parse()函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不是行独立的几种结构的处理方法——状态机"><span class="nav-number">3.3.</span> <span class="nav-text">不是行独立的几种结构的处理方法——状态机</span></a></li></ol></li></ol>
       </div>
     
   </div>
