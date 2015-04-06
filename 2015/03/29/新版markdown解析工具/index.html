@@ -181,8 +181,32 @@
 <li>link_image<br>  链接、图片、上标、下标也是利用正则表达式来实现替换。</li>
 </ul>
 <h3 id="不是行独立的几种结构的处理方法——状态机">不是行独立的几种结构的处理方法——状态机</h3><blockquote>
-<p>待续</p>
+<p>使用enum模块的Enum类</p>
 </blockquote>
+<h4 id="定义几个状态类">定义几个状态类</h4><ul>
+<li>对于表格，定义TABLE，取值为Init Format Table；</li>
+<li>对于有序列表定义ORDERLIST，取值为Init List</li>
+<li>对于块和代码块，定义BLOCK，取值为Init Block CodeBlock3个状态；</li>
+</ul>
+<h4 id="定义几个全局的状态变量">定义几个全局的状态变量</h4><p>table_state  orderList_state block_state<br>以及一个判定是否是合法代码块的is_code</p>
+<p>下面正式进入处理这几个最复杂结构的函数test_state中</p>
+<h4 id="代码块的状态转换">代码块的状态转换</h4><ul>
+<li>若当前行为’```’ 且对应的block_state状态为Init，则这行输出为<blockquote><br>并且状态修改为Block；</blockquote></li>
+<li>若当前行为’```’+语言名称，且当前状态为Init，则当前行为<code><br><br>修改状态为Block，并且设置is_code为True</code></li>
+<li>若当前状态为Block，且此时行为‘```’，则表明这个块结束，若is_code为True,则添加 ,否则,添加</li>
+<li>当前行为其它情况且状态为Block，表明这一行是在block内部，不做相关处理，但要将行内的空白符号全部替换为&amp;nbsp,以保留原缩进格式。</li>
+</ul>
+<p>有序列表和表格的状态转换类似，表格稍微复杂一些(从第一行的格式无法判断是否是一个合法的表格，必须前两行都满足才可以，因此将第一行缓存起来，根据第二行的情况来判断，然后将前两行一起输出)</p>
+<blockquote>
+<p>这些情况都可以画一个简单的状态图即可马上搞清楚。</p>
+</blockquote>
+<h3 id="公式支持和PDF输出">公式支持和PDF输出</h3><ul>
+<li><p>因为提交作业一般需要的是PDF格式，html格式一般不作为提交文件，当前可以用chrome的打印来完成，但是总觉得麻烦了一些，google之后发现一个叫做wtkhtmltopdf的命令行工具，所以就将其嵌入我们的小工具中，以实现一键输出的目的；</p>
+</li>
+<li><p>公式的支持就是利用在线的mathJax来做，效果有时候并不太好，容易出现对齐诡异的情况，但简单的公式还是可以很好的处理的。复杂的大段的公式最好就不要用markdown来写了吧。</p>
+</li>
+</ul>
+<h2 id="最后">最后</h2><p>我自己的使用感受还是很棒的，对个别不满意的也可以自己手工调整HTML文件来实现。最棒的是，我想要什么格式的输出，可以通过微调整源码来实现～<br>欢迎大家试用～～</p>
 
         
       </div>
@@ -306,7 +330,7 @@
 
     
       <div class="post-toc sidebar-panel-active">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件介绍"><span class="nav-number">1.</span> <span class="nav-text">软件介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一个demo"><span class="nav-number">1.1.</span> <span class="nav-text">第一个demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二个demo"><span class="nav-number">1.2.</span> <span class="nav-text">第二个demo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本次新版的特性"><span class="nav-number">2.</span> <span class="nav-text">本次新版的特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#采用Python_开发的命令行解析工具"><span class="nav-number">2.1.</span> <span class="nav-text">采用Python 开发的命令行解析工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码短小"><span class="nav-number">2.2.</span> <span class="nav-text">代码短小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方便安装和使用"><span class="nav-number">2.3.</span> <span class="nav-text">方便安装和使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发细节详解"><span class="nav-number">3.</span> <span class="nav-text">开发细节详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#源码阅读方法"><span class="nav-number">3.1.</span> <span class="nav-text">源码阅读方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体转换的parse()函数"><span class="nav-number">3.2.</span> <span class="nav-text">具体转换的parse()函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不是行独立的几种结构的处理方法——状态机"><span class="nav-number">3.3.</span> <span class="nav-text">不是行独立的几种结构的处理方法——状态机</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件介绍"><span class="nav-number">1.</span> <span class="nav-text">软件介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一个demo"><span class="nav-number">1.1.</span> <span class="nav-text">第一个demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二个demo"><span class="nav-number">1.2.</span> <span class="nav-text">第二个demo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本次新版的特性"><span class="nav-number">2.</span> <span class="nav-text">本次新版的特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#采用Python_开发的命令行解析工具"><span class="nav-number">2.1.</span> <span class="nav-text">采用Python 开发的命令行解析工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码短小"><span class="nav-number">2.2.</span> <span class="nav-text">代码短小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方便安装和使用"><span class="nav-number">2.3.</span> <span class="nav-text">方便安装和使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发细节详解"><span class="nav-number">3.</span> <span class="nav-text">开发细节详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#源码阅读方法"><span class="nav-number">3.1.</span> <span class="nav-text">源码阅读方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体转换的parse()函数"><span class="nav-number">3.2.</span> <span class="nav-text">具体转换的parse()函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不是行独立的几种结构的处理方法——状态机"><span class="nav-number">3.3.</span> <span class="nav-text">不是行独立的几种结构的处理方法——状态机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义几个状态类"><span class="nav-number">3.3.1.</span> <span class="nav-text">定义几个状态类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定义几个全局的状态变量"><span class="nav-number">3.3.2.</span> <span class="nav-text">定义几个全局的状态变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码块的状态转换"><span class="nav-number">3.3.3.</span> <span class="nav-text">代码块的状态转换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#公式支持和PDF输出"><span class="nav-number">3.4.</span> <span class="nav-text">公式支持和PDF输出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol>
       </div>
     
   </div>
