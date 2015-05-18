@@ -27,7 +27,7 @@
 
 
 
-  <title> 几个有趣的小例子 // 羽加迪姆勒维奥萨 </title>
+  <title> LoadShader辅助函数 // 羽加迪姆勒维奥萨 </title>
 </head>
 
 <body>
@@ -106,7 +106,7 @@
           
           
             
-              几个有趣的小例子
+              LoadShader辅助函数
             
           
         </h1>
@@ -115,15 +115,15 @@
       <div class="post-meta">
           <span class="post-time">
             
-              发表于 2015-03-22
+              发表于 2015-05-18
             
           </span>
         
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/03/22/几个有趣的小例子/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/22/几个有趣的小例子/"></span>
+            <a href="/2015/05/18/LoadShader辅助函数/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/18/LoadShader辅助函数/"></span>
             </a>
           </span>
           
@@ -138,34 +138,19 @@
         
 
         
-          <h1 id="倒水问题">倒水问题</h1><h3 id="问题描述：">问题描述：</h3><ul>
-<li>有3个容器，分别为3升、5升、10升，初始状态是最大的放满水，较小的都为空。</li>
-<li>可以进行的操作是：3个容器互相倒水，直至其中一个满或者其中一个空为止(因为三个容器无刻度，故只有这种倒法)</li>
-<li>能否得到0、 5 、5 升这样的结果，若可以，如果得到？</li>
-</ul>
-<h3 id="问题分析">问题分析</h3><ul>
-<li>首先为方便标注，记三个容器为X Y Z；初始状态为(0,0,10);</li>
-<li>可以进行的操作有:x-&gt;y,y-&gt;x,x-&gt;z,z-&gt;x,y-&gt;z,z-&gt;y 六种</li>
-<li><p>结果要求的状态是 (0,5,5)</p>
-  <a id="more"></a>
+          <h1 id="加载shader">加载shader</h1><blockquote>
+<p>superbible 中采用将 shader 的source 写在数组里面的方式加载，每次都要在末尾加\n和前后的”” ，比较麻烦。</p>
+</blockquote>
+<h2 id="写一个辅助函数来从文件中读取">写一个辅助函数来从文件中读取</h2><a id="more"></a>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#ifndef _LOAD_H</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> _LOAD_H</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;fstream&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;string&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;sstream&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;sb6.h&gt;</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> BUFFER_SIZE = <span class="number">4096</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LoadShader</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *file, GLchar *&amp; arg)</span> </span>&#123;</span><br><span class="line">	std::ifstream read_file;</span><br><span class="line">	std::<span class="built_in">string</span> result;</span><br><span class="line">	</span><br><span class="line">	read_file.open(file);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!read_file)&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	std::<span class="built_in">string</span> line;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (std::getline(read_file, line)) &#123;</span><br><span class="line">		<span class="keyword">for</span> (std::string::iterator i = line.begin(); i != line.end(); i++) &#123;</span><br><span class="line">			result.push_back(*i);</span><br><span class="line">		&#125;</span><br><span class="line">		result.push_back(<span class="string">'\n'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	arg = <span class="keyword">new</span> GLchar[BUFFER_SIZE];</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">memcpy</span>(arg, result.c_str(), result.size());</span><br><span class="line">	arg[result.size()] = <span class="string">'\0'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span> <span class="comment">//load.h</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="注意事项">注意事项</h2><ul>
+<li>需要给arg创建一个缓冲区</li>
+<li><p>memcpy复制之后注意要给末尾加上’\0’，这样才可以使之成为合法的字符串</p>
+</li>
+<li><p>调用中注意加个取地址符</p>
 </li>
 </ul>
-<h3 id="建立抽象模型">建立抽象模型</h3><ul>
-<li>相当于我们建立一条从(0,0,10) ==&gt; (0,5,5)的路径即可，而某个结点的出边最多有6条，因此模拟一个图的BFS搜索即可完成任务。</li>
-<li>我们无需显示的把node 和 edge 表示出来，因为边唯一的作用就是标注路径，并没有权值或者其它的作用。故仅用node来标注state即可。</li>
-</ul>
-<h3 id="问题解决">问题解决</h3><ul>
-<li>node 定义</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//node </span></span><br><span class="line"><span class="keyword">struct</span> node &#123;</span><br><span class="line">	<span class="keyword">int</span> x;</span><br><span class="line">	<span class="keyword">int</span> y;</span><br><span class="line">	<span class="keyword">int</span> z;</span><br><span class="line">	operate oper;</span><br><span class="line">	node* prev;</span><br><span class="line">	node* next;</span><br><span class="line">	node(<span class="keyword">int</span> a,<span class="keyword">int</span> b,<span class="keyword">int</span> c,operate o,node * p,node *n):x(a),y(b),z(c),oper(o),prev(p),next(n) &#123;&#125;</span><br><span class="line">	node()&#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="built_in">cout</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;<span class="string">"("</span>&lt;&lt;x&lt;&lt;<span class="string">","</span>&lt;&lt;y&lt;&lt;<span class="string">","</span>&lt;&lt;z&lt;&lt;<span class="string">")"</span>&lt;&lt;<span class="string">" "</span>;									</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>核心代码</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">node* pour_water(<span class="keyword">int</span> a,<span class="keyword">int</span> b,<span class="keyword">int</span> c,<span class="keyword">int</span> d) &#123;</span><br><span class="line">	node *init = <span class="keyword">new</span> node(<span class="number">0</span>,<span class="number">0</span>,c,INIT,NULL,NULL);</span><br><span class="line">	<span class="stl_container"><span class="built_in">queue</span>&lt;node*&gt;</span> q;</span><br><span class="line">	q.push(init);</span><br><span class="line">	<span class="built_in">array</span>.push_back(init);</span><br><span class="line">	<span class="keyword">while</span>(q.size()!=<span class="number">0</span>) &#123;</span><br><span class="line">		node* temp=q.front();</span><br><span class="line">		q.pop();</span><br><span class="line">		<span class="keyword">int</span> x=temp-&gt;x;</span><br><span class="line">		<span class="keyword">int</span> y=temp-&gt;y;</span><br><span class="line">		<span class="keyword">int</span> z=temp-&gt;z;</span><br><span class="line">		<span class="keyword">if</span>(y==d &amp;&amp; z==d)&#123;</span><br><span class="line">			<span class="keyword">return</span> init;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(x!=<span class="number">0</span> &amp;&amp; y!=b) &#123;               <span class="comment">//x-&gt;y</span></span><br><span class="line">			node *result=<span class="keyword">new</span> node();</span><br><span class="line">			<span class="keyword">if</span> (y+x&gt;b) &#123;</span><br><span class="line">				result-&gt;x=x+y-b;result-&gt;y=b;result-&gt;z=z;result-&gt;oper=X2Y;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				result-&gt;x=<span class="number">0</span>;result-&gt;y=x+y;result-&gt;z=z;result-&gt;oper=X2Y; </span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(legal(result)) &#123;</span><br><span class="line">				<span class="built_in">array</span>.push_back(result);</span><br><span class="line">				result-&gt;prev=temp;</span><br><span class="line">				temp-&gt;next=result;</span><br><span class="line">				q.push(result);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">/*</span><br><span class="line">		....其它五种情况完全类似于上面的情况，轮换参数即可 </span><br><span class="line">		*/</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> NULL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>其中legal 函数是用来判断结点是否已经走过，避免遍历到旧的结点上</p>
-</blockquote>
-<p>当然，建模完成后这个问题基本上已经结束了，后面的遍历还是很直接的。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GLchar* vertex_shader_source;</span><br><span class="line"></span><br><span class="line">LoadShader(<span class="string">"vertex.vert"</span>,vertex_shader_source);</span><br><span class="line"></span><br><span class="line">glShaderSource(vertex_shader, <span class="number">1</span>, &amp;vertex_shader_source, NULL);</span><br></pre></td></tr></table></figure>
 
         
       </div>
@@ -176,8 +161,8 @@
         
           <div class="post-tags">
             
-              <a href="/tags/算法/">
-                #算法
+              <a href="/tags/openGL/">
+                #openGL
               </a>
             
           </div>
@@ -187,13 +172,11 @@
           <div class="post-nav">
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/2015/03/29/新版markdown解析工具/">新版markdown解析工具</a>
-              
             </div>
 
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2015/03/16/Y组合子/">Y组合子</a>
+                <a href="/2015/05/14/杂事记/">杂事记</a>
               
             </div>
           </div>
@@ -210,8 +193,8 @@
   
     <div class="comments" id="comments">
       
-        <div class="ds-thread" data-thread-key="2015/03/22/几个有趣的小例子/"
-             data-title="几个有趣的小例子" data-url="https://duangao.github.io/2015/03/22/几个有趣的小例子/">
+        <div class="ds-thread" data-thread-key="2015/05/18/LoadShader辅助函数/"
+             data-title="LoadShader辅助函数" data-url="https://duangao.github.io/2015/05/18/LoadShader辅助函数/">
         </div>
 
       
@@ -291,7 +274,7 @@
 
     
       <div class="post-toc sidebar-panel-active">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#倒水问题"><span class="nav-number">1.</span> <span class="nav-text">倒水问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题描述："><span class="nav-number">1.0.1.</span> <span class="nav-text">问题描述：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题分析"><span class="nav-number">1.0.2.</span> <span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立抽象模型"><span class="nav-number">1.0.3.</span> <span class="nav-text">建立抽象模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题解决"><span class="nav-number">1.0.4.</span> <span class="nav-text">问题解决</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#加载shader"><span class="nav-number">1.</span> <span class="nav-text">加载shader</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#写一个辅助函数来从文件中读取"><span class="nav-number">1.1.</span> <span class="nav-text">写一个辅助函数来从文件中读取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">1.2.</span> <span class="nav-text">注意事项</span></a></li></ol></li></ol>
       </div>
     
   </div>
