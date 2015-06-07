@@ -13,6 +13,7 @@
 <meta property="og:site_name" content="羽加迪姆勒维奥萨">
 <meta property="og:description" content="软件介绍第一个demo之前还在博客园写博客的时候已经有过一篇介绍markdown解析器的[博文](http://www.cnblogs.com/gaoduan/p/4127875.html)然而上面的版本实际上有一个致命的错误，就是解析策略是错误的，一开始使用split将字符串分割之后丢失了很多信息，因此实际上是不可取的。
 第二个demo">
+<meta property="og:image" content="http://7xi9ka.com1.z0.glb.clouddn.com/markdown.PNG">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="新版markdown解析工具">
 <meta name="twitter:description" content="软件介绍第一个demo之前还在博客园写博客的时候已经有过一篇介绍markdown解析器的[博文](http://www.cnblogs.com/gaoduan/p/4127875.html)然而上面的版本实际上有一个致命的错误，就是解析策略是错误的，一开始使用split将字符串分割之后丢失了很多信息，因此实际上是不可取的。
@@ -76,7 +77,8 @@
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="软件介绍">软件介绍</h2><h3 id="第一个demo">第一个demo</h3><p>之前还在博客园写博客的时候已经有过一篇介绍markdown解析器的[博文](<a href="http://www.cnblogs.com/gaoduan/p/4127875.html" target="_blank" rel="external">http://www.cnblogs.com/gaoduan/p/4127875.html</a>)<br>然而上面的版本实际上有一个致命的错误，就是解析策略是错误的，一开始使用split将字符串分割之后丢失了很多信息，因此实际上是不可取的。</p>
+        <p><img src="http://7xi9ka.com1.z0.glb.clouddn.com/markdown.PNG" alt=""></p>
+<h2 id="软件介绍">软件介绍</h2><h3 id="第一个demo">第一个demo</h3><p>之前还在博客园写博客的时候已经有过一篇介绍markdown解析器的[博文](<a href="http://www.cnblogs.com/gaoduan/p/4127875.html" target="_blank" rel="external">http://www.cnblogs.com/gaoduan/p/4127875.html</a>)<br>然而上面的版本实际上有一个致命的错误，就是解析策略是错误的，一开始使用split将字符串分割之后丢失了很多信息，因此实际上是不可取的。</p>
 <h3 id="第二个demo">第二个demo</h3><a id="more"></a>
 <p>吸取上面的教训之后，又加上想做个实时预览的GUI界面，因此改用更加熟悉的C++来做，这样方便使用Qt来做GUI。参见[C++版](<a href="http://www.cnblogs.com/gaoduan/p/4160689.html" target="_blank" rel="external">http://www.cnblogs.com/gaoduan/p/4160689.html</a>)</p>
 <p>这个版本没有显著的策略错误，实现细节的关键在于搞清楚各种语法的不同层次或者说是作用范围，比如粗体 斜体 删除线是词法阶段的，基本不涉及上下文语义，而像6级标题 无序列表等也基本上很好处理，判断一下行首的字符即可。</p>
