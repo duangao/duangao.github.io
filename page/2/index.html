@@ -51,6 +51,59 @@
   </div>
 </header>
     <section id="main" class="outer">
+      <article id="post-几个有趣的小例子" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/22/几个有趣的小例子/">几个有趣的小例子</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2015/03/22/几个有趣的小例子/" class="article-date">
+  <time datetime="2015-03-22T07:21:51.000Z" itemprop="datePublished">3月 22 2015</time>
+</a>
+      
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="http://pic.sc.chinaz.com/files/pic/pic9/201211/xpic8502.jpg" alt=""></p>
+<h1 id="倒水问题">倒水问题</h1><h3 id="问题描述：">问题描述：</h3><ul>
+<li>有3个容器，分别为3升、5升、10升，初始状态是最大的放满水，较小的都为空。</li>
+<li>可以进行的操作是：3个容器互相倒水，直至其中一个满或者其中一个空为止(因为三个容器无刻度，故只有这种倒法)</li>
+<li>能否得到0、 5 、5 升这样的结果，若可以，如果得到？</li>
+</ul>
+<h3 id="问题分析">问题分析</h3><ul>
+<li>首先为方便标注，记三个容器为X Y Z；初始状态为(0,0,10);</li>
+<li>可以进行的操作有:x-&gt;y,y-&gt;x,x-&gt;z,z-&gt;x,y-&gt;z,z-&gt;y 六种</li>
+<li><p>结果要求的状态是 (0,5,5)</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/03/22/几个有趣的小例子/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+  
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+
+    </footer>
+  
+  </div>
+  
+</article>
+
+
+    
       <article id="post-Y组合子" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -248,60 +301,8 @@
 
 
     
-      <article id="post-racket模拟延时求值" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/23/racket模拟延时求值/">racket模拟延时求值</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2014/12/23/racket模拟延时求值/" class="article-date">
-  <time datetime="2014-12-23T12:50:39.000Z" itemprop="datePublished">12月 23 2014</time>
-</a>
-      
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRRK0d1Zc5orlLSCX6YLoUvRfJk6g1Hap8GctvEInfkYJzjki9thQ" alt=""></p>
-<ul>
-<li>之前按照 SICP 的实现方式修改简化实现了一个简易的scheme 解释器，然后改用 python 实现了一次(其实是两次，还重写了一次)。</li>
-<li>中途又去玩 haskell 去了；顺便一提，了解 haskell 和 scheme 十分重要，二者都包含很多独特重要的思想，haskell 推荐《haskell 趣学指南》十分通俗易懂。 haskell 一个特性是惰性求值，其实 SICP中第三章介绍了流和delay evaluation ，第四章后面实现了lazy evaluation的变形，这篇文章是解决SICP中实现delay evaluation的一个小问题。</li>
-</ul>
-<p>SICP 第三章介绍流的时候介绍了delay eval的实现，然而你如果直接按照书上的写法在racket里面运行的话，会无法实现“delay”！</p>
-<ul>
-<li>直接按照书写的话大概是这个样子,包含一个重要的优化（对于同一个表达式只求值一次）：</li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2014/12/23/racket模拟延时求值/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-  
-    <footer class="article-footer">
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/racket/">racket</a></li></ul>
-
-    </footer>
-  
-  </div>
-  
-</article>
-
-
-    
       <nav id="page-nav">
-        <a class="extend prev" rel="prev" href="/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">下一页 &raquo;</a>
+        <a class="extend prev" rel="prev" href="/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">下一页 &raquo;</a>
       </nav>
     </section>
     <footer id="footer">
