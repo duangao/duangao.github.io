@@ -127,7 +127,7 @@
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>下面是基本的解决方案，详细的文件见我个人github</p>
+        <p><img src="http://image.3001.net/images/20150414/14290128658530.jpg!small" alt=""><br>下面是基本的解决方案，详细的文件见我个人github</p>
 <h1 id="level_0">level 0</h1><ul>
 <li>首先看test函数内部，发现sub了0x28个字节，因此分配了40个字节，再加上push进去的ebp，一共44个字节，因此填充44个30（就是0），然后将函数smoke的地址08048c90按照小端法写出：90 8c 04 08</li>
 <li>执行命令是：<blockquote>
