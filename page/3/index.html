@@ -37,6 +37,8 @@
         
           <a class="main-nav-link" href="/archives">Archives</a>
         
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
           <a class="main-nav-link" href="/tags">Tags</a>
         
           <a class="main-nav-link" href="/about">About</a>
@@ -51,156 +53,6 @@
   </div>
 </header>
     <section id="main" class="outer">
-      <article id="post-racket模拟延时求值" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/23/racket模拟延时求值/">racket模拟延时求值</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2014/12/23/racket模拟延时求值/" class="article-date">
-  <time datetime="2014-12-23T12:50:39.000Z" itemprop="datePublished">12月 23 2014</time>
-</a>
-      
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRRK0d1Zc5orlLSCX6YLoUvRfJk6g1Hap8GctvEInfkYJzjki9thQ" alt=""></p>
-<ul>
-<li>之前按照 SICP 的实现方式修改简化实现了一个简易的scheme 解释器，然后改用 python 实现了一次(其实是两次，还重写了一次)。</li>
-<li>中途又去玩 haskell 去了；顺便一提，了解 haskell 和 scheme 十分重要，二者都包含很多独特重要的思想，haskell 推荐《haskell 趣学指南》十分通俗易懂。 haskell 一个特性是惰性求值，其实 SICP中第三章介绍了流和delay evaluation ，第四章后面实现了lazy evaluation的变形，这篇文章是解决SICP中实现delay evaluation的一个小问题。</li>
-</ul>
-<p>SICP 第三章介绍流的时候介绍了delay eval的实现，然而你如果直接按照书上的写法在racket里面运行的话，会无法实现“delay”！</p>
-<ul>
-<li>直接按照书写的话大概是这个样子,包含一个重要的优化（对于同一个表达式只求值一次）：</li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2014/12/23/racket模拟延时求值/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-  
-    <footer class="article-footer">
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/racket/">racket</a></li></ul>
-
-    </footer>
-  
-  </div>
-  
-</article>
-
-
-    
-      <article id="post-拓扑排序的两种做法" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/18/拓扑排序的两种做法/">拓扑排序的两种做法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2014/12/18/拓扑排序的两种做法/" class="article-date">
-  <time datetime="2014-12-18T12:44:54.000Z" itemprop="datePublished">12月 18 2014</time>
-</a>
-      
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="http://new.51cto.com/files/uploadimg/20080811/093814341.jpg" alt=""></p>
-<ul>
-<li>DFS</li>
-<li>入度为0的顶点集合</li>
-</ul>
-<h2 id="利用_DFS_实现拓扑排序">利用 DFS 实现拓扑排序</h2><ul>
-<li>拓扑排序是维持一个偏序关系而不一定是全序的；通俗点来讲，就是将拓扑排序后的顶点从左往右排列好之后，满足所有的边都朝向一个方向，这样就一定是偏序意义上的排序了；</li>
-<li>DFS 结果中包含 d(u) 和 f(u)两个重要的参数，尤其是f(u)。解释一下这两个参数，d（u）表示开始访问顶点时的时间，f（u）表示访问结束的时间。</li>
-<li><strong>对于有向的无环图，DFS 产生的f(u) 按照降序排列即可得到其拓扑排序(由小到大)</strong></li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2014/12/18/拓扑排序的两种做法/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-  
-    <footer class="article-footer">
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-
-    </footer>
-  
-  </div>
-  
-</article>
-
-
-    
-      <article id="post-BufferLab" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/10/25/BufferLab/">BufferLab</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2014/10/25/BufferLab/" class="article-date">
-  <time datetime="2014-10-24T16:06:12.000Z" itemprop="datePublished">10月 25 2014</time>
-</a>
-      
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="http://image.3001.net/images/20150414/14290128658530.jpg!small" alt=""><br>下面是基本的解决方案，详细的文件见我个人github</p>
-<h1 id="level_0">level 0</h1><ul>
-<li>首先看test函数内部，发现sub了0x28个字节，因此分配了40个字节，再加上push进去的ebp，一共44个字节，因此填充44个30（就是0），然后将函数smoke的地址08048c90按照小端法写出：90 8c 04 08</li>
-<li>执行命令是：<blockquote>
-<p>cat 121140013-candle.txt | ./hex2raw |./bufbomb -u 121140013</p>
-</blockquote>
-</li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2014/10/25/BufferLab/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-  
-  </div>
-  
-</article>
-
-
-    
       <article id="post-递归下降求解中缀、后缀、前缀表达式" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -220,6 +72,10 @@
   <time datetime="2014-09-15T03:42:37.000Z" itemprop="datePublished">9月 15 2014</time>
 </a>
       
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/program/">program</a>
+  </div>
+
       
     </div>
     <div class="article-entry" itemprop="articleBody">
@@ -258,6 +114,10 @@
   <time datetime="2014-08-21T09:01:57.000Z" itemprop="datePublished">8月 21 2014</time>
 </a>
       
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/program/">program</a>
+  </div>
+
       
     </div>
     <div class="article-entry" itemprop="articleBody">
@@ -284,8 +144,63 @@
 
 
     
+      <article id="post-traits技法小计" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/08/10/traits技法小计/">traits技法小计</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2014/08/10/traits技法小计/" class="article-date">
+  <time datetime="2014-08-10T14:04:56.000Z" itemprop="datePublished">8月 10 2014</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/program/">program</a>
+  </div>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="http://a4.att.hudong.com/40/79/19300001306677131029792269727.jpg" alt=""></p>
+<ul>
+<li>在学习算法导论的时候，对于各数据结构，自然是实现一个才算掌握，工具当然是template编程，但是自己的demo经常存在很多问题，比如没有给出迭代器啊，操作符重载不够啊等等设计上的问题，而某些问题实际上是从设计之初就该考虑的大框架，而非小细节。对于C++而言，STL无疑是最佳的参考资料，侯捷先生的STL源码剖析一书给我们良好的示范，而直接从第四章开始看会云里雾里，无法得其精髓，因此在学习算法之余决定尾随侯捷先生脚步，学习STL traits技法，从而可以从STL中学到更多的数据结构实现。</li>
+<li><p>收获自是颇多，不仅可以掌握数据结构的基础知识，还会教会我们如何去筛选+那些实现的方案，比如hash_table选择了chaining法解决冲突，map和set采用红黑树等等，</p>
+</li>
+<li><p>而且对我们C++泛型编程技法和C++重载技术也是极好的锻炼，源码之前，尽是宝藏。<br>当然前提是有良好的数据结构知识和C++primer程度的C++技能。<br>本文对侯捷先生的第二章进行简单概括，便于日后查看，将一些和traits不太相关的比如C++语法等略去。</p>
+</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2014/08/10/traits技法小计/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+  
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li></ul>
+
+    </footer>
+  
+  </div>
+  
+</article>
+
+
+    
       <nav id="page-nav">
-        <a class="extend prev" rel="prev" href="/page/2/">&laquo; 上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">下一页 &raquo;</a>
+        <a class="extend prev" rel="prev" href="/page/2/">&laquo; 上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
       </nav>
     </section>
     <footer id="footer">
