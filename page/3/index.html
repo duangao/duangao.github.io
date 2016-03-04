@@ -55,6 +55,55 @@
 </header>
 
     <section id="main" class="outer">
+      <article id="post-BufferLab" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/10/25/BufferLab/">BufferLab</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2014/10/25/BufferLab/" class="article-date">
+  <time datetime="2014-10-24T16:06:12.000Z" itemprop="datePublished">10月 25 2014</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/program/">program</a>
+  </div>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="http://image.3001.net/images/20150414/14290128658530.jpg!small" alt=""><br>下面是基本的解决方案，详细的文件见我个人github</p>
+<h1 id="level_0">level 0</h1><ul>
+<li>首先看test函数内部，发现sub了0x28个字节，因此分配了40个字节，再加上push进去的ebp，一共44个字节，因此填充44个30（就是0），然后将函数smoke的地址08048c90按照小端法写出：90 8c 04 08</li>
+<li>执行命令是：<blockquote>
+<p>cat 121140013-candle.txt | ./hex2raw |./bufbomb -u 121140013</p>
+</blockquote>
+</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2014/10/25/BufferLab/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+  
+  </div>
+  
+</article>
+
+
+    
       <article id="post-递归下降求解中缀、后缀、前缀表达式" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     

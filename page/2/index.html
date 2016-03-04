@@ -55,6 +55,61 @@
 </header>
 
     <section id="main" class="outer">
+      <article id="post-Y组合子" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/16/Y组合子/">Y组合子</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2015/03/16/Y组合子/" class="article-date">
+  <time datetime="2015-03-16T03:41:45.000Z" itemprop="datePublished">3月 16 2015</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/program/">program</a>
+  </div>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="http://images.cnitblog.com/blog/80686/201304/10164405-ce393a9b67a74fe390681facf1e04b9a.jpg" alt=""></p>
+<h2 id="lambda_calculus">lambda calculus</h2><ul>
+<li>BNF 文法定义</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+ <span class="tag">&lt;<span class="title">expr</span>&gt;</span> ::= <span class="tag">&lt;<span class="title">identifier</span>&gt;</span></span><br><span class="line">+ <span class="tag">&lt;<span class="title">expr</span>&gt;</span> ::= lambda <span class="tag">&lt;<span class="title">identifier-list</span>&gt;</span> -&gt; <span class="tag">&lt;<span class="title">expr</span>&gt;</span></span><br><span class="line">+ <span class="tag">&lt;<span class="title">expr</span>&gt;</span> ::= (<span class="tag">&lt;<span class="title">expr</span>&gt;</span> <span class="tag">&lt;<span class="title">expr</span>&gt;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>BNF 定义中，前两条定义了lambda 表达式的格式，第三条实际上是其调用方法。</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2015/03/16/Y组合子/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+  
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scheme/">scheme</a></li></ul>
+
+    </footer>
+  
+  </div>
+  
+</article>
+
+
+    
       <article id="post-一个小demo" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -269,55 +324,6 @@
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
 
     </footer>
-  
-  </div>
-  
-</article>
-
-
-    
-      <article id="post-BufferLab" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/10/25/BufferLab/">BufferLab</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2014/10/25/BufferLab/" class="article-date">
-  <time datetime="2014-10-24T16:06:12.000Z" itemprop="datePublished">10月 25 2014</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/program/">program</a>
-  </div>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="http://image.3001.net/images/20150414/14290128658530.jpg!small" alt=""><br>下面是基本的解决方案，详细的文件见我个人github</p>
-<h1 id="level_0">level 0</h1><ul>
-<li>首先看test函数内部，发现sub了0x28个字节，因此分配了40个字节，再加上push进去的ebp，一共44个字节，因此填充44个30（就是0），然后将函数smoke的地址08048c90按照小端法写出：90 8c 04 08</li>
-<li>执行命令是：<blockquote>
-<p>cat 121140013-candle.txt | ./hex2raw |./bufbomb -u 121140013</p>
-</blockquote>
-</li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2014/10/25/BufferLab/#more">Read More</a>
-          </p>
-        
-      
-    </div>
   
   </div>
   
